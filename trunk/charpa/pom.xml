@@ -12,6 +12,7 @@
     <modules>
         <module>charpa-service</module>
         <module>charpa-web</module>
+        <module>charpa-integration-test</module>
     </modules>
 
     <scm>
@@ -210,6 +211,12 @@
                 <version>1.5.3</version>
             </dependency>
 
+            <!-- SSH -->
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.41</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

@@ -73,9 +73,17 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core-tiger</artifactId>
         </dependency>
+
         <dependency>
             <groupId>aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
+
+        <!-- SSH -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+        </dependency>
+        
     </dependencies>
 </project>
