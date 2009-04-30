@@ -9,10 +9,6 @@ public class AppServerInstance implements Serializable {
 
     public enum Type {TOMCAT, WEBLOGIC}
 
-    /** Name */
-    public String getName() { return theName ; }
-    public void setName(String aName) { theName = aName ; }
-
     /** Home directory */
     public String getHomeDirectory() { return theHomeDirectory ; }
     public void setHomeDirectory(String aHomeDirectory) { theHomeDirectory = aHomeDirectory ; }
@@ -32,14 +28,30 @@ public class AppServerInstance implements Serializable {
     public Integer  getHttpsPort() { return theHttpsPort ; }
     public void setHttpsPort(Integer  aHttpsPort) { theHttpsPort = aHttpsPort ; }
 
+    /** User id */
+    public String getUserId() { return theUserId ; }
+    public void setUserId(String aUserId) { theUserId = aUserId ; }
+
+    /** Application id */
+    public String getApplicationId() { return theApplicationId ; }
+    public void setApplicationId(String aApplicationId) { theApplicationId = aApplicationId ; }
+
+    /** Host */
+    public String getHostId() { return theHostId ; }
+    public void setHostId(String aHostId) { theHostId = aHostId ; }
+
+    /** Host */
+    private String theHostId ;
+    /** Application id */
+    private String theApplicationId ;
+    /** User id */
+    private String theUserId ;
     /** https port */
     private Integer  theHttpsPort ;
     /** http port */
     private int theHttpPort ;
     /** Home directory */
     private String theHomeDirectory ;
-    /** Name */
-    private String theName ;
     /** Application server type */
     private Type theType ;
 }

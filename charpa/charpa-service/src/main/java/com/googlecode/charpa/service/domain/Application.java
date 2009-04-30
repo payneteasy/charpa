@@ -9,9 +9,9 @@ public class Application implements Serializable {
     /** File type */
     public enum FILE_TYPE {WAR, EAR}
 
-    /** Application name */
-    public String getName() { return theName ; }
-    public void setName(String aName) { theName = aName ; }
+    /** Id */
+    public String getId() { return theId ; }
+    public void setId(String aId) { theId = aId ; }
 
     /** Filename */
     public String getFilename() { return theFilename ; }
@@ -19,6 +19,6 @@ public class Application implements Serializable {
 
     /** Filename */
     private String theFilename ;
-    /** Application name */
-    private String theName ;
+    /** Id */
+    private String theId ;
 }
