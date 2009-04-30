@@ -217,6 +217,14 @@
                 <artifactId>jsch</artifactId>
                 <version>0.1.41</version>
             </dependency>
+
+            <!-- simple xml -->
+            <dependency>
+                <groupId>org.simpleframework</groupId>
+                <artifactId>simple-xml</artifactId>
+                <version>2.0.4</version>
+            </dependency>
+            
         </dependencies>
     </dependencyManagement>
     <build>
