@@ -48,6 +48,20 @@
                 <version>1.0-1-SNAPSHOT</version>
             </dependency>
 
+            <!-- charpa-wicket service -->
+            <dependency>
+                <groupId>com.googlecode.charpa-wicket</groupId>
+                <artifactId>charpa-wicket-service</artifactId>
+                <version>1.0-1-SNAPSHOT</version>
+            </dependency>
+
+            <!-- charpa-wicket web -->
+            <dependency>
+                <groupId>com.googlecode.charpa-wicket</groupId>
+                <artifactId>charpa-wicket-web</artifactId>
+                <version>1.0-1-SNAPSHOT</version>
+            </dependency>
+
             <!--  WICKET DEPENDENCIES -->
             <dependency>
                 <groupId>org.apache.wicket</groupId>

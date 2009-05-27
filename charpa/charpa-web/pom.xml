@@ -15,6 +15,13 @@
     </parent>
     <dependencies>
 
+        <!-- charpa-wicket service -->
+        <dependency>
+            <groupId>com.googlecode.charpa-wicket</groupId>
+            <artifactId>charpa-wicket-web</artifactId>
+        </dependency>
+
+        <!-- charpa service -->
         <dependency>
             <groupId>com.googlecode.charpa</groupId>
             <artifactId>charpa-service</artifactId>
