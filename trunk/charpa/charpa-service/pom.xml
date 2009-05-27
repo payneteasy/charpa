@@ -17,6 +17,12 @@
     <dependencies>
 
 
+        <!-- charpa-wicket service -->
+        <dependency>
+            <groupId>com.googlecode.charpa-wicket</groupId>
+            <artifactId>charpa-wicket-service</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
