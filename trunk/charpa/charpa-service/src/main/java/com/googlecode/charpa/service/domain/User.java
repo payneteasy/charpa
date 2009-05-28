@@ -18,6 +18,12 @@ public class User implements Serializable {
     public String getPassword() { return thePassword ; }
     public void setPassword(String aPassword) { thePassword = aPassword ; }
 
+    /** Comment */
+    public String getComment() { return theComment ; }
+    public void setComment(String aComment) { theComment = aComment ; }
+
+    /** Comment */
+    private String theComment ;
     /** Password */
     private String thePassword ;
     /** Username */

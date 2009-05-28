@@ -20,7 +20,7 @@ public class HostSimpleDaoTest extends TestCase {
         dao.setPersister(persister);
 
         Host host = new Host();
-        host.setId("host1");
+        host.setHostname("host1");
         host.setIpAddress("localhost");
 
         dao.addHost(host);
