@@ -6,19 +6,17 @@ import java.io.Serializable;
  * Application
  */
 public class Application implements Serializable {
-    /** File type */
-    public enum FILE_TYPE {WAR, EAR}
 
-    /** Id */
-    public String getId() { return theId ; }
-    public void setId(String aId) { theId = aId ; }
+    /** Application id */
+    public ApplicationId getApplicationId() { return theApplicationId ; }
+    public void setApplicationId(ApplicationId aApplicationId) { theApplicationId = aApplicationId ; }
 
-    /** Filename */
-    public String getFilename() { return theFilename ; }
-    public void setFilename(String aFilename) { theFilename = aFilename ; }
+    /** Application name */
+    public String getApplicationName() { return theApplicationName ; }
+    public void setApplicationName(String aApplicationName) { theApplicationName = aApplicationName ; }
 
-    /** Filename */
-    private String theFilename ;
-    /** Id */
-    private String theId ;
+    /** Application name */
+    private String theApplicationName ;
+    /** Application id */
+    private ApplicationId theApplicationId ;
 }

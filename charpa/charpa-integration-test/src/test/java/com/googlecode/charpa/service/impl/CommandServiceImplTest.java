@@ -13,12 +13,11 @@ public class CommandServiceImplTest extends TestCase {
 
     public void test() {
         Host host = new Host();
-        host.setId("localhost");
+        host.setHostname("localhost");
         host.setIpAddress("localhost");
 
         Application app = new Application();
-        app.setId("test-app");
-        app.setFilename("test-app.war");
+        app.setApplicationName("test-app");
 
         User user = new User();
         user.setId("test");

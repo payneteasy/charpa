@@ -11,18 +11,18 @@ import java.io.Serializable;
 @Root(name = "host")
 public class Host implements Serializable {
 
-    /** Id */
-    public String getId() { return theId ; }
-    public void setId(String aId) { theId = aId ; }
+    /** Hostname */
+    public String getHostname() { return theHostname ; }
+    public void setHostname(String aHostname) { theHostname = aHostname ; }
 
     /** Ip address */
     public String getIpAddress() { return theIpAddress ; }
     public void setIpAddress(String aIpAddress) { theIpAddress = aIpAddress ; }
 
     /** Ip address */
-    @Attribute(name = "address")
+    @Attribute(name = "ipAddress")
     private String theIpAddress ;
-    /** Id */
-    @Attribute(name = "id")
-    private String theId ;
+    /** Hostname */
+    @Attribute(name = "hostname")
+    private String theHostname ;
 }
