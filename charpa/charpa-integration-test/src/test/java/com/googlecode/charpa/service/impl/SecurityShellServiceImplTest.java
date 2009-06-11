@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import com.googlecode.charpa.service.SecurityShellException;
 import com.googlecode.charpa.service.ICommandOutputListener;
 
+import java.io.File;
+
 /**
  * 
  */
@@ -21,5 +23,13 @@ public class SecurityShellServiceImplTest extends TestCase {
             }
         };
         service.executeCommand("localhost", 22, "test", "test", null, "unknowncommand", null, listener);
+    }
+
+
+    public void testCopyFile() throws SecurityShellException {
+        SecurityShellServiceImpl service = new SecurityShellServiceImpl();
+        service.copyFileToRemoteHost("localhost", 22, "test", "test"
+                , new File("src/test/resources/log4j.properties")
+                , "/home/test");
     }
 }
