@@ -3,15 +3,13 @@ package com.googlecode.charpa.service.impl;
 import com.googlecode.charpa.service.ISecurityShellService;
 import com.googlecode.charpa.service.ICommandOutputListener;
 import com.googlecode.charpa.service.SecurityShellException;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.*;
 
 import java.util.Map;
 import java.util.List;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.File;
 
 import org.springframework.util.Assert;
 
@@ -24,13 +22,55 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
     /**
      * {@inheritDoc}
      */
-    public void executeCommand(String aHostname, int aPort
-            , String aUsername, String aPassword
-            , Map<String, String> aEnv, String aCommand, List<String> aArguments
-            , ICommandOutputListener aCommandOutputListener)
+    public void copyFileToRemoteHost(String aHostname
+            , int aPort
+            , String aUsername
+            , String aPassword
+            , File aLocalFile
+            , String aRemoteDir)
             throws SecurityShellException {
-        Assert.notNull(aCommandOutputListener, "aCommandOutputListener is null");
-        
+
+        Session session = createSession(aHostname, aPort, aUsername, aPassword);
+        try {
+            ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
+            try {
+                try {
+                    sftp.connect();
+                    try {
+                        sftp.cd(aRemoteDir);
+                        String localDir = aLocalFile.getParentFile().getAbsolutePath();
+                        try {
+                            sftp.lcd(localDir);
+                            String filename = aLocalFile.getName();
+                            try {
+                                sftp.put(filename, filename, ChannelSftp.OVERWRITE);
+                            } catch (SftpException e) {
+                                throw new SecurityShellException("Error copying file '" + filename + "' :" + e.getMessage(), e);
+                            }
+                        } catch (SftpException e) {
+                            throw new SecurityShellException("Error changing local dir to '" + aLocalFile.getAbsolutePath() + "' :" + e.getMessage(), e);
+                        }
+                    } catch (SftpException e) {
+                        throw new SecurityShellException("Error changining remote dir to '" + aRemoteDir + "' :" + e.getMessage(), e);
+                    }
+                } catch (JSchException e) {
+                    throw new SecurityShellException("Error opening sftp channel: " + e.getMessage(), e);
+                }
+            } finally {
+                sftp.disconnect();
+            }
+        } catch (JSchException e) {
+            throw new SecurityShellException("Error opening sftp channel: " + e.getMessage(), e);
+        } finally {
+            closeSession(session);
+        }
+    }
+
+    private void closeSession(Session aSession) {
+        aSession.disconnect();
+    }
+
+    private Session createSession(String aHostname, int aPort, String aUsername, String aPassword) throws SecurityShellException {
         JSch jsch = new JSch();
 
         try {
@@ -41,32 +81,7 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
             try {
                 session.connect(DEFAULT_TIMEOUT);
 
-                try {
-                    ChannelExec channel = (ChannelExec) session.openChannel("exec");
-                    try {
-                        channel.setCommand(aCommand);
-                        channel.setInputStream(null);
-                        channel.setErrStream(null);
-                        channel.setOutputStream(System.out);
-
-                        channel.connect(DEFAULT_TIMEOUT);
-                        try {
-                            try {
-                                processExec(channel.getInputStream(), channel.getErrStream(), channel, aCommandOutputListener);
-                            } catch (IOException e) {
-                                throw new SecurityShellException("Error processing command:" + e.getMessage(), e);
-                            }
-                        } finally {
-                            channel.disconnect();
-                        }
-                    } catch (Exception e) {
-                        throw new SecurityShellException("Error connecting to channel channel:" + e.getMessage(), e);
-                    }
-                } catch (Exception e) {
-                    throw new SecurityShellException("Error opening channel: " + e.getMessage(), e);
-                } finally {
-                    session.disconnect();
-                }
+                return session;
             } catch (JSchException e) {
                 throw new SecurityShellException("Error connecting to host: " + aHostname + ":" + aPort
                         + " : " + e.getMessage()
@@ -76,6 +91,46 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
             throw new SecurityShellException("Error connecting to host: " + aHostname + ":" + aPort
                     + " : " + e.getMessage()
                     , e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void executeCommand(String aHostname, int aPort
+            , String aUsername, String aPassword
+            , Map<String, String> aEnv, String aCommand, List<String> aArguments
+            , ICommandOutputListener aCommandOutputListener)
+            throws SecurityShellException {
+        Assert.notNull(aCommandOutputListener, "aCommandOutputListener is null");
+
+        Session session = createSession(aHostname, aPort, aUsername, aPassword);
+
+        try {
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            try {
+                channel.setCommand(aCommand);
+                channel.setInputStream(null);
+                channel.setErrStream(null);
+                channel.setOutputStream(System.out);
+
+                channel.connect(DEFAULT_TIMEOUT);
+                try {
+                    try {
+                        processExec(channel.getInputStream(), channel.getErrStream(), channel, aCommandOutputListener);
+                    } catch (IOException e) {
+                        throw new SecurityShellException("Error processing command:" + e.getMessage(), e);
+                    }
+                } finally {
+                    channel.disconnect();
+                }
+            } catch (Exception e) {
+                throw new SecurityShellException("Error connecting to channel channel:" + e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            throw new SecurityShellException("Error opening channel: " + e.getMessage(), e);
+        } finally {
+            closeSession(session);
         }
     }
 
