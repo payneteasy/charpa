@@ -18,5 +18,5 @@ public interface IHostService {
      * @param aId host id
      * @return host
      */
-    Host getHostById(String aId);
+    Host getHostById(long aId);
 }

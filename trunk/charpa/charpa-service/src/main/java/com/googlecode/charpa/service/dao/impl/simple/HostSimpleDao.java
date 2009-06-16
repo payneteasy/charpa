@@ -10,11 +10,12 @@ import com.googlecode.charpa.service.domain.Host;
 public class HostSimpleDao implements IHostDao {
 
     public void addHost(Host aHost) throws DaoException {
-        thePersister.getHolder().getHosts().put(aHost.getHostname(), aHost);
+        aHost.setId(thePersister.getHolder().getNextHostId());
+        thePersister.getHolder().getHosts().put(aHost.getId(), aHost);
         thePersister.save();
     }
 
-    public Host getHostById(String aId) {
+    public Host getHostById(long aId) {
         return thePersister.getHolder().getHosts().get(aId);
     }
 

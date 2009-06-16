@@ -24,8 +24,12 @@ public class HostServiceImpl implements IHostService {
     /**
      * {@inheritDoc}
      */
-    public Host getHostById(String aId) {
-        return theHostDao.getHostById(aId);
+    public Host getHostById(long aId) {
+        try {
+            return theHostDao.getHostById(aId);
+        } catch (DaoException e) {
+            throw new RuntimeException("Error getting host "+aId+": "+e.getMessage(), e) ;
+        }
     }
 
     /** IHostDao */

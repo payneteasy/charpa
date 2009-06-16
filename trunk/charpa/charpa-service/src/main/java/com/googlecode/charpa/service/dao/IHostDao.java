@@ -22,5 +22,5 @@ public interface IHostDao {
      * @param aId host id
      * @return host
      */
-    Host getHostById(String aId);
+    Host getHostById(long aId) throws DaoException;
 }

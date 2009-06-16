@@ -9,10 +9,9 @@ public interface ICommandService {
 
     /**
      * Executes command for application server instance
-     * @param aProgressId progress id
-     * @param aHostId     host
-     * @param aAppId      application
-     * @param aCommand    command
+     * @param aProgressId    progress id
+     * @param aApplicationId application id
+     * @param aCommand       command
      */
-    void executeCommand(ProgressId aProgressId, String aHostId, String aAppId, String aCommand);
+    void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand);
 }
