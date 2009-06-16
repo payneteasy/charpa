@@ -2,10 +2,7 @@ package com.googlecode.charpa.service.impl;
 
 import com.googlecode.charpa.progress.service.IProgressManagerService;
 import com.googlecode.charpa.progress.service.ProgressId;
-import com.googlecode.charpa.service.ICommandInfoService;
-import com.googlecode.charpa.service.ICommandService;
-import com.googlecode.charpa.service.IHostService;
-import com.googlecode.charpa.service.ISecurityShellService;
+import com.googlecode.charpa.service.*;
 import com.googlecode.charpa.service.dao.IApplicationDao;
 import com.googlecode.charpa.service.dao.IUserDao;
 import com.googlecode.charpa.service.domain.Application;
@@ -21,14 +18,13 @@ public class CommandServiceImpl implements ICommandService {
     /**
      * {@inheritDoc}
      */
-    public void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand) {
+    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) {
 
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         Host host = theHostService.getHostById(application.getHostId());
 
         theProgressManagerService.startProgress(aProgressId
-                , String.format("Executing $s/$s: $s ..."
-                , host.getHostname(), application.getApplicationName(), aCommand)
+                , String.format("Executing %s/%s: %s ...", host.getHostname(), application.getApplicationName(), aCommand)
                 , 1
         );
 
@@ -37,6 +33,7 @@ public class CommandServiceImpl implements ICommandService {
 
         try {
             // copy command to remote host
+            theProgressManagerService.setProgressText(aProgressId, String.format("Copy file %s to %s...", aCommand, host.getHostname()));
             theSecurityShellService.copyFileToRemoteHost(host.getHostname()
                     , host.getSshPort()
                     , user.getUsername()
@@ -46,14 +43,23 @@ public class CommandServiceImpl implements ICommandService {
             );
 
             // executes command
+            theProgressManagerService.setProgressText(aProgressId, String.format("Executing command %s ...", aCommand));
             theSecurityShellService.executeCommand(host.getHostname()
                     , host.getSshPort()
                     , user.getUsername()
                     , user.getPassword()
                     , null
-                    , aCommand
+                    , "./"+aCommand
                     , null
-                    , null
+                    , new ICommandOutputListener() {
+                public void onOutputLine(Level aLevel, String aLine) {
+                    if(aLevel== Level.ERROR) {
+                        theProgressManagerService.setProgressText(aProgressId, "ERROR: "+aLine);
+                    } else {
+                        theProgressManagerService.setProgressText(aProgressId, aLine);
+                    }
+                }
+            }
             );
 
             theProgressManagerService.finishProgress(aProgressId);
