@@ -49,11 +49,11 @@ public class CommandServiceImpl implements ICommandService {
                     , user.getUsername()
                     , user.getPassword()
                     , null
-                    , "./"+aCommand
+                    , String.format("chmod +x ./%s && ./%s && rm ./%s", aCommand, aCommand, aCommand)
                     , null
                     , new ICommandOutputListener() {
                 public void onOutputLine(Level aLevel, String aLine) {
-                    if(aLevel== Level.ERROR) {
+                    if(aLevel == Level.ERROR) {
                         theProgressManagerService.setProgressText(aProgressId, "ERROR: "+aLine);
                     } else {
                         theProgressManagerService.setProgressText(aProgressId, aLine);
