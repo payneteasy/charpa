@@ -34,7 +34,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
         theProgresses.put(id, info);
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: created with name {}", aName, id.toString());
+            LOG.debug("{}: CREATED [ {} ]", id.toString(), aName);
         }
         return id;
     }
@@ -107,7 +107,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         info.setState(ProgressState.CANCELLED);
         info.setEndedTime(new Date());
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: cancelled", aProgressId.toString());
+            LOG.debug("{}: CANCELLED", aProgressId.toString());
         }
     }
 
@@ -116,20 +116,20 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     //
 
     public void startProgress(ProgressId aProgressId, String aProgressName, int aMaxValue) {
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: STARTING: {}", aProgressId.toString(), aProgressName);
-        }
         ProgressInfo info = findProgress(aProgressId);
         info.setName(aProgressName);
         info.setMax(aMaxValue);
         info.setProgressText(""); // removes "Starting ..." text
         info.setStartedTime(new Date());
         info.setState(ProgressState.RUNNING);
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: STARTED [ {} ]", aProgressId.toString(), aProgressName);
+        }
     }
 
     public void setProgressText(ProgressId aProgressId, String aProgressText) {
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: {}", aProgressId.toString(), aProgressText);
+            LOG.debug("{}: text: {}", aProgressId.toString(), aProgressText);
         }
         findProgress(aProgressId).setProgressText(aProgressText);
     }
@@ -162,6 +162,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         info.setState(ProgressState.FAILED);
         info.setEndedTime(new Date());
         info.setProgressText(aException.getMessage());
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: FAILED", aProgressId.toString());
+        }
     }
 
     ////////////////////////////////
