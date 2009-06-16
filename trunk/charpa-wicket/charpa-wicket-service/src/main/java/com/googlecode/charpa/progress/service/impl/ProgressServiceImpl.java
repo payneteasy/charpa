@@ -4,6 +4,8 @@ import com.googlecode.charpa.progress.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Period;
 import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -13,6 +15,8 @@ import java.util.concurrent.Executors;
  * Progress service
  */
 public class ProgressServiceImpl implements IProgressInfoService, IProgressManagerService {
+
+    final Logger LOG = LoggerFactory.getLogger(ProgressServiceImpl.class);
 
     public ProgressServiceImpl() {
         ProgressId id = createProgressId("Start system");
@@ -29,6 +33,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressId id = new ProgressId(UUID.randomUUID().toString());
         ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
         theProgresses.put(id, info);
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: created with name {}", aName, id.toString());
+        }
         return id;
     }
 
@@ -36,6 +43,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     // INFO INTERFACE
     //
     public void invoke(ProgressId aProgressId, Runnable aRunnable) {
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: INVOKED", aProgressId.toString());
+        }
         theExecutor.execute(aRunnable);
     }
 
@@ -96,6 +106,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressInfo info = findProgress(aProgressId);
         info.setState(ProgressState.CANCELLED);
         info.setEndedTime(new Date());
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: cancelled", aProgressId.toString());
+        }
     }
 
     ////////////////////////////////
@@ -103,6 +116,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     //
 
     public void startProgress(ProgressId aProgressId, String aProgressName, int aMaxValue) {
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: STARTING: {}", aProgressId.toString(), aProgressName);
+        }
         ProgressInfo info = findProgress(aProgressId);
         info.setName(aProgressName);
         info.setMax(aMaxValue);
@@ -112,6 +128,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void setProgressText(ProgressId aProgressId, String aProgressText) {
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: {}", aProgressId.toString(), aProgressText);
+        }
         findProgress(aProgressId).setProgressText(aProgressText);
     }
 
@@ -123,6 +142,9 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressInfo info = findProgress(aProgressId);
         info.setEndedTime(new Date());
         info.setState(ProgressState.FINISHED);
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("{}: FINISHED", aProgressId.toString());
+        }
     }
 
     public boolean isCancelled(ProgressId aProgressId) {
