@@ -11,18 +11,32 @@ import java.io.Serializable;
 @Root(name = "host")
 public class Host implements Serializable {
 
-    /** Hostname */
+    /** Host id */
+    public long getId() { return theId ; }
+    public void setId(long aId) { theId = aId ; }
+
+    /** Name */
+    public String getName() { return theName ; }
+    public void setName(String aName) { theName = aName ; }
+
+    /** Hostname or ip address */
     public String getHostname() { return theHostname ; }
     public void setHostname(String aHostname) { theHostname = aHostname ; }
 
-    /** Ip address */
-    public String getIpAddress() { return theIpAddress ; }
-    public void setIpAddress(String aIpAddress) { theIpAddress = aIpAddress ; }
+    /** SSH port */
+    public int getSshPort() { return theSshPort ; }
+    public void setSshPort(int aSshPort) { theSshPort = aSshPort ; }
 
-    /** Ip address */
-    @Attribute(name = "ipAddress")
-    private String theIpAddress ;
+    /** SSH port */
+    @Attribute(name = "sshPort")
+    private int theSshPort = 22;
+    /** Name */
+    @Attribute(name = "name")
+    private String theName ;
     /** Hostname */
     @Attribute(name = "hostname")
     private String theHostname ;
+    /** Host id */
+    @Attribute(name = "id")
+    private long theId ;
 }
