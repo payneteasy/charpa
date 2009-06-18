@@ -34,7 +34,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
         theProgresses.put(id, info);
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: CREATED [ {} ]", id.toString(), aName);
+            LOG.debug("{}: CREATED [ {} ]", id, aName);
         }
         return id;
     }
@@ -44,7 +44,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     //
     public void invoke(ProgressId aProgressId, Runnable aRunnable) {
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: INVOKED", aProgressId.toString());
+            LOG.debug("{}: INVOKED", aProgressId);
         }
         theExecutor.execute(aRunnable);
     }
@@ -107,7 +107,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         info.setState(ProgressState.CANCELLED);
         info.setEndedTime(new Date());
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: CANCELLED", aProgressId.toString());
+            LOG.debug("{}: CANCELLED", aProgressId);
         }
     }
 
@@ -123,13 +123,13 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         info.setStartedTime(new Date());
         info.setState(ProgressState.RUNNING);
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: STARTED [ {} ]", aProgressId.toString(), aProgressName);
+            LOG.debug("{}: STARTED [ {} ]", aProgressId, aProgressName);
         }
     }
 
     public void setProgressText(ProgressId aProgressId, String aProgressText) {
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: text: {}", aProgressId.toString(), aProgressText);
+            LOG.debug("{}: text: {}", aProgressId, aProgressText);
         }
         findProgress(aProgressId).setProgressText(aProgressText);
     }
@@ -143,7 +143,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         info.setEndedTime(new Date());
         info.setState(ProgressState.FINISHED);
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: FINISHED", aProgressId.toString());
+            LOG.debug("{}: FINISHED", aProgressId);
         }
     }
 
@@ -158,12 +158,15 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
     
     public void progressFailed(ProgressId aProgressId, Exception aException) {
+        LOG.error(aProgressId+": "+aException.getMessage(), aException);
+
         ProgressInfo info = findProgress(aProgressId);
         info.setState(ProgressState.FAILED);
         info.setEndedTime(new Date());
         info.setProgressText(aException.getMessage());
+        
         if(LOG.isDebugEnabled()) {
-            LOG.debug("{}: FAILED", aProgressId.toString());
+            LOG.debug("{}: FAILED", aProgressId);
         }
     }
 

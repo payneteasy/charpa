@@ -48,7 +48,7 @@ public class ListProgressesPanel extends Panel {
                 aItem.add(new Label("progress-running-time", FormatUtils.formatPeriod(info.getElapsedPeriod())));
 
                 PageParameters params = new PageParameters();
-                params.put("id", info.getId());
+                params.put("id", info.getId().toString());
                 BookmarkablePageLink link = new BookmarkablePageLink("progress-link", aProgressPanelClass, params);
                 aItem.add(link);
                 link.add(new Label("progress-name", info.getName()));
