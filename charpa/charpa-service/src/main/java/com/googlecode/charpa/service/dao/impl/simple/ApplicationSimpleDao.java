@@ -4,6 +4,10 @@ import com.googlecode.charpa.service.dao.IApplicationDao;
 import com.googlecode.charpa.service.dao.impl.DaoException;
 import com.googlecode.charpa.service.domain.Application;
 
+import java.util.List;
+import java.util.Collections;
+import java.util.LinkedList;
+
 /**
  * Application's dao simple implementation
  */
@@ -17,6 +21,10 @@ public class ApplicationSimpleDao implements IApplicationDao {
 
     public Application getApplicationById(long aId) {
         return thePersister.getHolder().getApplications().get(aId);
+    }
+
+    public List<Application> getAllApplications() {
+        return new LinkedList<Application>(thePersister.getHolder().getApplications().values());
     }
 
     /** Simple persister */
