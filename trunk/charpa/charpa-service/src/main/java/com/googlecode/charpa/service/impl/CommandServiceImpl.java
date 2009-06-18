@@ -24,8 +24,8 @@ public class CommandServiceImpl implements ICommandService {
         Host host = theHostService.getHostById(application.getHostId());
 
         theProgressManagerService.startProgress(aProgressId
-                , String.format("Executing %s/%s: %s ...", host.getHostname(), application.getApplicationName(), aCommand)
-                , 1
+                , String.format("Run %s / %s / %s ...", host.getHostname(), application.getApplicationName(), aCommand)
+                , 2
         );
 
         User user = theUserDao.getUserById(application.getUserId());
@@ -41,6 +41,7 @@ public class CommandServiceImpl implements ICommandService {
                     , command.getLocalFile()
                     , "."
             );
+            theProgressManagerService.incrementProgressValue(aProgressId);
 
             // executes command
             theProgressManagerService.setProgressText(aProgressId, String.format("Executing command %s ...", aCommand));
@@ -61,6 +62,7 @@ public class CommandServiceImpl implements ICommandService {
                 }
             }
             );
+            theProgressManagerService.incrementProgressValue(aProgressId);
 
             theProgressManagerService.finishProgress(aProgressId);
         } catch (Exception e) {

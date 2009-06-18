@@ -1,6 +1,9 @@
 package com.googlecode.charpa.web;
 
 import com.googlecode.charpa.web.page.HomePage;
+import com.googlecode.charpa.web.page.progress.ProgressesListPage;
+import com.googlecode.charpa.web.page.progress.ProgressPage;
+import com.googlecode.charpa.web.page.command.CommandsListPage;
 import org.apache.wicket.extensions.ajax.markup.html.form.upload.UploadWebRequest;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -36,6 +39,11 @@ public class WicketApplication extends WebApplication {
         addComponentInstantiationListener(new SpringComponentInjector(this));
         getDebugSettings().setOutputMarkupContainerClassName(false);
 
+        mountBookmarkablePage("/commands"   , CommandsListPage.class);
+        mountBookmarkablePage("/tasks"      , ProgressesListPage.class);
+        mountBookmarkablePage("/task"       , ProgressPage.class);
+
+        
 //        getSecuritySettings().setAuthorizationStrategy(new SpringSecurityAuthorizationStrategy());
 
     }
@@ -52,8 +60,8 @@ public class WicketApplication extends WebApplication {
     /**
      * {@inheritDoc}
      */
-    public Class<HomePage> getHomePage() {
-        return HomePage.class;
+    public Class<CommandsListPage> getHomePage() {
+        return CommandsListPage.class;
     }
 
 

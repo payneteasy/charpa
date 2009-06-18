@@ -3,6 +3,8 @@ package com.googlecode.charpa.service.dao;
 import com.googlecode.charpa.service.domain.Application;
 import com.googlecode.charpa.service.dao.impl.DaoException;
 
+import java.util.List;
+
 /**
  * Application dao
  */
@@ -26,4 +28,11 @@ public interface IApplicationDao {
      *          on db error
      */
     void createApplication(Application aApplication) throws DaoException;
+
+    /**
+     * Gets all applications
+     *
+     * @return applications list
+     */
+    List<Application> getAllApplications();
 }

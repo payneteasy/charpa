@@ -1,0 +1,32 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<head>
+    <title>List of commands</title>
+</head>
+<body>
+<wicket:extend>
+    <h1>List of commands</h1>
+    <table class="ae-table" border="1">
+        <thead>
+            <tr>
+                <th>Host</th>
+                <th>Aplication</th>
+                <th>Command</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr wicket:id="commands">
+                <td><span wicket:id="command-host">testhost</span></td>
+                <td><span wicket:id="command-application">testapplication</span></td>
+                <td>
+                    <a href="#" wicket:id="command-run-link">
+                        <span wicket:id="command-name">test.sh</span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</wicket:extend>
+
+</body>
+</html>
+
