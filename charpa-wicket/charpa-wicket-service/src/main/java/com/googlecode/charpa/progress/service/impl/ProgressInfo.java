@@ -3,15 +3,14 @@ package com.googlecode.charpa.progress.service.impl;
 import com.googlecode.charpa.progress.service.IProgressInfo;
 import com.googlecode.charpa.progress.service.ProgressState;
 import com.googlecode.charpa.progress.service.ProgressId;
+import com.googlecode.charpa.progress.service.LogMessage;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.Date;
-import java.util.Map;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Progress info
@@ -119,6 +118,28 @@ public class ProgressInfo implements Serializable {
     public void setEndedTime(Date aEndedTime) { theEndedTime.set(aEndedTime) ; }
 
     /**
+     * Add info message
+     *
+     * @param aInfoMessage info message
+     */
+    public void info(String aInfoMessage) {
+        theLogMessages.add(new LogMessage(LogMessage.Level.INFO, aInfoMessage));
+    }
+
+    /**
+     * Add error message
+     *
+     * @param aErrorMessage error message
+     */
+    public void error(String aErrorMessage) {
+        theLogMessages.add(new LogMessage(LogMessage.Level.ERROR, aErrorMessage));
+    }
+
+    public List<LogMessage> getLogMessages() {
+        return theLogMessages;
+    }
+    
+    /**
      * Progress state
      */
     private AtomicReference<ProgressState> theState;
@@ -146,5 +167,6 @@ public class ProgressInfo implements Serializable {
     private final AtomicReference<Date> theStartedTime = new AtomicReference<Date>();
     /** Ended time */
     private final AtomicReference<Date> theEndedTime = new AtomicReference<Date>();
-    private final AtomicLong theLeftTime = new AtomicLong(0);  
+    private final AtomicLong theLeftTime = new AtomicLong(0);
+    private final List<LogMessage> theLogMessages = Collections.synchronizedList(new ArrayList<LogMessage>());
 }
