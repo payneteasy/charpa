@@ -85,6 +85,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
                 , aProgressInfo.getEndedTime()
                 , elapsedPeriod
                 , leftPeriod
+                , aProgressInfo.getLogMessages()
         );
     }
 
@@ -168,6 +169,16 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: FAILED", aProgressId);
         }
+    }
+
+    public void info(ProgressId aProgressId, String aInfoMessage) {
+        ProgressInfo info = findProgress(aProgressId);
+        info.info(aInfoMessage);
+    }
+
+    public void error(ProgressId aProgressId, String aErrorMessage) {
+        ProgressInfo info = findProgress(aProgressId);
+        info.error(aErrorMessage);
     }
 
     ////////////////////////////////

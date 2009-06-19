@@ -4,6 +4,7 @@ import org.joda.time.Period;
 
 import java.util.Map;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Progress info
@@ -81,4 +82,12 @@ public interface IProgressInfo {
      * @return left time
      */
     Period getLeftPeriod();
+
+    /**
+     * Last log messages
+     * @param aCount count messages
+     * @return log messages
+     */
+    List<LogMessage> getLastLogMessages(int aCount);
+
 }

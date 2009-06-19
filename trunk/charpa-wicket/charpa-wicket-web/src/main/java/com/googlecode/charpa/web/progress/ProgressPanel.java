@@ -1,25 +1,23 @@
 package com.googlecode.charpa.web.progress;
 
-import com.googlecode.charpa.progress.service.IProgressInfoService;
-import com.googlecode.charpa.progress.service.ProgressId;
-import com.googlecode.charpa.progress.service.IProgressInfo;
-import com.googlecode.charpa.progress.service.ProgressState;
+import com.googlecode.charpa.progress.service.*;
 import com.googlecode.charpa.web.component.ConfirmAjaxLink;
 import com.googlecode.charpa.web.util.FormatUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.*;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Displays progress info
@@ -146,6 +144,18 @@ public class ProgressPanel extends Panel {
         }) {
             public boolean isVisible() {
                 return model.getObject().getLeftPeriod()!=null;
+            }
+        });
+
+        // log messages
+        LoadableDetachableModel<List<LogMessage>> logMessagesModel = new LoadableDetachableModel<List<LogMessage>>() {
+            protected List<LogMessage> load() {
+                return model.getObject().getLastLogMessages(20);
+            }
+        };
+        panel.add(new ListView<LogMessage>("log-messages", logMessagesModel) {
+            protected void populateItem(ListItem<LogMessage> aItem) {
+                aItem.add(new Label("log-message", aItem.getModelObject().getMessage()));
             }
         });
     }

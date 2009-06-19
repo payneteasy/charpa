@@ -22,4 +22,18 @@ public interface IProgressManagerService {
     boolean isCancelled(ProgressId aProgressId);
     
     void setName(ProgressId aProgressId, String name);
+
+    /**
+     * Add info level message
+     * @param aProgressId progress id
+     * @param aInfoMessage message
+     */
+    void info(ProgressId aProgressId, String aInfoMessage);
+
+    /**
+     * Add error  message
+     * @param aErrorMessage message
+     * @param aProgressId progress id
+     */
+    void error(ProgressId aProgressId, String aErrorMessage);
 }

@@ -44,6 +44,10 @@
         td.time {
             text-align: right;
         }
+
+        ul.log-messages li {
+            list-style: none;
+        }
     </style>
 </wicket:head>
 <wicket:panel>
@@ -87,6 +91,10 @@
                 <tr><td>Estimated time left: </td><td class='time' wicket:id="time-left">01:01:01</td></tr>
             </wicket:enclosure>
         </table>
+
+        <ul class="log-messages">
+            <li wicket:id="log-messages"><span wicket:id="log-message">[Log message]</span></li>
+        </ul>
 
     </div>
 
