@@ -8,6 +8,7 @@ import com.jcraft.jsch.*;
 
 import java.util.Map;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.File;
@@ -163,7 +164,11 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
         while (aInputStream.available() > 0) {
             int i = aInputStream.read(buf, 0, 1024);
             if (i < 0) break;
-            aCommandOutputListener.onOutputLine(aLevel, new String(buf, 0, i));
+            String text = new String(buf, 0, i);
+            StringTokenizer st = new StringTokenizer(text, "\r\n");
+            while( st.hasMoreTokens() ) {
+                aCommandOutputListener.onOutputLine(aLevel, st.nextToken());
+            }
         }
     }
 }
