@@ -8,6 +8,11 @@ import com.googlecode.charpa.service.dao.IApplicationDao;
 import com.googlecode.charpa.service.dao.IUserDao;
 import com.googlecode.charpa.service.domain.*;
 
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Implementation of ICommandService
  */
@@ -21,9 +26,13 @@ public class CommandServiceImpl implements ICommandService {
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         Host host = theHostService.getHostById(application.getHostId());
 
+        String key = aApplicationId + " - " + aCommand;
+        Integer previousCount = thePreviosCommandLinesCount.get(key);
+        final int max = 2 + (previousCount!=null ? previousCount : 0) ;
+
         theProgressManagerService.startProgress(aProgressId
                 , String.format("Run %s / %s / %s ...", host.getHostname(), application.getApplicationName(), aCommand)
-                , 2
+                , max
         );
 
         User user = theUserDao.getUserById(application.getUserId());
@@ -45,6 +54,8 @@ public class CommandServiceImpl implements ICommandService {
 
             // executes command
             theProgressManagerService.setProgressText(aProgressId, String.format("Executing command %s ...", aCommand));
+
+            final AtomicInteger count = new AtomicInteger(0);
             theSecurityShellService.executeCommand(host.getHostname()
                     , host.getSshPort()
                     , user.getUsername()
@@ -54,6 +65,12 @@ public class CommandServiceImpl implements ICommandService {
                     , null
                     , new ICommandOutputListener() {
                 public void onOutputLine(Level aLevel, String aLine) {
+                    // increment lines count
+                    int currentCount = count.incrementAndGet();
+                    if(currentCount + 2 <= max) {
+                        theProgressManagerService.incrementProgressValue(aProgressId);
+                    }
+                    
                     if(aLevel == Level.ERROR) {
                         theProgressManagerService.error(aProgressId, aLine);
                     } else {
@@ -66,6 +83,7 @@ public class CommandServiceImpl implements ICommandService {
             theProgressManagerService.incrementProgressValue(aProgressId);
 
             theProgressManagerService.finishProgress(aProgressId);
+            thePreviosCommandLinesCount.put(key, count.get());
         } catch (Exception e) {
             theProgressManagerService.progressFailed(aProgressId, e);
         }
@@ -159,4 +177,6 @@ public class CommandServiceImpl implements ICommandService {
      * ISecurityShellService
      */
     private ISecurityShellService theSecurityShellService;
+
+    private Map<String, Integer> thePreviosCommandLinesCount = Collections.synchronizedMap(new HashMap<String, Integer>());
 }
