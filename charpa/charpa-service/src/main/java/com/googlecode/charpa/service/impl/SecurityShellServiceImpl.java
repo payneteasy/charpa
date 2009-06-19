@@ -3,6 +3,7 @@ package com.googlecode.charpa.service.impl;
 import com.googlecode.charpa.service.ISecurityShellService;
 import com.googlecode.charpa.service.ICommandOutputListener;
 import com.googlecode.charpa.service.SecurityShellException;
+import com.googlecode.charpa.service.model.HttpProxyInfo;
 import com.jcraft.jsch.*;
 
 import java.util.Map;
@@ -27,10 +28,11 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
             , String aUsername
             , String aPassword
             , File aLocalFile
-            , String aRemoteDir)
+            , String aRemoteDir
+            , HttpProxyInfo aProxyInfo )
             throws SecurityShellException {
 
-        Session session = createSession(aHostname, aPort, aUsername, aPassword);
+        Session session = createSession(aHostname, aPort, aUsername, aPassword, aProxyInfo);
         try {
             ChannelSftp sftp = (ChannelSftp) session.openChannel("sftp");
             try {
@@ -70,13 +72,16 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
         aSession.disconnect();
     }
 
-    private Session createSession(String aHostname, int aPort, String aUsername, String aPassword) throws SecurityShellException {
+    private Session createSession(String aHostname, int aPort, String aUsername, String aPassword, HttpProxyInfo aProxyInfo) throws SecurityShellException {
         JSch jsch = new JSch();
 
         try {
             Session session = jsch.getSession(aUsername, aHostname, aPort);
             session.setPassword(aPassword);
             session.setUserInfo(new UserInfoKI(aPassword));
+            if (aProxyInfo != null) {
+                session.setProxy(new ProxyHTTP(aProxyInfo.getHostname(), aProxyInfo.getPort()));
+            }
 
             try {
                 session.connect(DEFAULT_TIMEOUT);
@@ -100,11 +105,12 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
     public void executeCommand(String aHostname, int aPort
             , String aUsername, String aPassword
             , Map<String, String> aEnv, String aCommand, List<String> aArguments
-            , ICommandOutputListener aCommandOutputListener)
+            , ICommandOutputListener aCommandOutputListener
+            , HttpProxyInfo aProxyInfo )
             throws SecurityShellException {
         Assert.notNull(aCommandOutputListener, "aCommandOutputListener is null");
 
-        Session session = createSession(aHostname, aPort, aUsername, aPassword);
+        Session session = createSession(aHostname, aPort, aUsername, aPassword, aProxyInfo);
 
         try {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
