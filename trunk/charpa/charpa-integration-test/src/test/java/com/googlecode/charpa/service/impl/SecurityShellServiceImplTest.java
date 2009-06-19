@@ -22,7 +22,7 @@ public class SecurityShellServiceImplTest extends TestCase {
                 }
             }
         };
-        service.executeCommand("localhost", 22, "test", "test", null, "unknowncommand", null, listener);
+        service.executeCommand("localhost", 22, "test", "test", null, "unknowncommand", null, listener, null);
     }
 
 
@@ -30,6 +30,6 @@ public class SecurityShellServiceImplTest extends TestCase {
         SecurityShellServiceImpl service = new SecurityShellServiceImpl();
         service.copyFileToRemoteHost("localhost", 22, "test", "test"
                 , new File("src/test/resources/log4j.properties")
-                , "/home/test");
+                , "/home/test", null);
     }
 }

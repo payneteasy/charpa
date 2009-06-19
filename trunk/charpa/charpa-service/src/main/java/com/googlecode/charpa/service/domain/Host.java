@@ -2,6 +2,7 @@ package com.googlecode.charpa.service.domain;
 
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
 
 import java.io.Serializable;
 
@@ -27,6 +28,13 @@ public class Host implements Serializable {
     public int getSshPort() { return theSshPort ; }
     public void setSshPort(int aSshPort) { theSshPort = aSshPort ; }
 
+    /** Http proxy */
+    public HttpProxy getHttpProxy() { return theHttpProxy ; }
+    public void setHttpProxy(HttpProxy aHttpProxy) { theHttpProxy = aHttpProxy ; }
+
+    /** Http proxy */
+    @Element(name = "httpProxy", required = false)
+    private HttpProxy theHttpProxy ;
     /** SSH port */
     @Attribute(name = "sshPort")
     private int theSshPort = 22;

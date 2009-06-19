@@ -3,12 +3,10 @@ package com.googlecode.charpa.service.impl;
 import com.googlecode.charpa.progress.service.IProgressManagerService;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.service.*;
+import com.googlecode.charpa.service.model.HttpProxyInfo;
 import com.googlecode.charpa.service.dao.IApplicationDao;
 import com.googlecode.charpa.service.dao.IUserDao;
-import com.googlecode.charpa.service.domain.Application;
-import com.googlecode.charpa.service.domain.CommandInfo;
-import com.googlecode.charpa.service.domain.Host;
-import com.googlecode.charpa.service.domain.User;
+import com.googlecode.charpa.service.domain.*;
 
 /**
  * Implementation of ICommandService
@@ -32,6 +30,7 @@ public class CommandServiceImpl implements ICommandService {
         CommandInfo command = theCommandInfoService.getCommandInfo(aApplicationId, aCommand);
 
         try {
+            HttpProxyInfo httpProxyInfo = createProxyInfo(host.getHttpProxy());
             // copy command to remote host
             theProgressManagerService.setProgressText(aProgressId, String.format("Copy file %s to %s...", aCommand, host.getHostname()));
             theSecurityShellService.copyFileToRemoteHost(host.getHostname()
@@ -40,6 +39,7 @@ public class CommandServiceImpl implements ICommandService {
                     , user.getPassword()
                     , command.getLocalFile()
                     , "."
+                    , httpProxyInfo
             );
             theProgressManagerService.incrementProgressValue(aProgressId);
 
@@ -61,6 +61,7 @@ public class CommandServiceImpl implements ICommandService {
                     }
                 }
             }
+                    , httpProxyInfo
             );
             theProgressManagerService.incrementProgressValue(aProgressId);
 
@@ -69,6 +70,15 @@ public class CommandServiceImpl implements ICommandService {
             theProgressManagerService.progressFailed(aProgressId, e);
         }
 
+    }
+
+    /**
+     * Creates proxy info if proxy is setted to host
+     * @param aProxy proxy
+     * @return proxy info
+     */
+    private HttpProxyInfo createProxyInfo(HttpProxy aProxy) {
+        return aProxy!=null ? new HttpProxyInfo(aProxy.getHostname(), aProxy.getPort()) : null;
     }
 
     /**
