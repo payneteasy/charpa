@@ -55,9 +55,9 @@ public class CommandServiceImpl implements ICommandService {
                     , new ICommandOutputListener() {
                 public void onOutputLine(Level aLevel, String aLine) {
                     if(aLevel == Level.ERROR) {
-                        theProgressManagerService.setProgressText(aProgressId, "ERROR: "+aLine);
+                        theProgressManagerService.error(aProgressId, aLine);
                     } else {
-                        theProgressManagerService.setProgressText(aProgressId, aLine);
+                        theProgressManagerService.info(aProgressId, aLine);
                     }
                 }
             }
