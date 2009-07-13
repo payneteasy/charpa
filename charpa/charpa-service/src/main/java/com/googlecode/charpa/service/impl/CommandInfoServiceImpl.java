@@ -43,7 +43,7 @@ public class CommandInfoServiceImpl implements ICommandInfoService {
                         cmd.setCommandName(file.getName());
                         cmd.setApplicationId(application.getId());
                         cmd.setApplicationName(application.getApplicationName());
-                        cmd.setHostname(theHostDao.getHostById(application.getId()).getName());
+                        cmd.setHostname(theHostDao.getHostById(application.getHostId()).getName());
                         list.add(cmd);
                     }
                 }
