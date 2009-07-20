@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
 
 /**
  * Implementation of ICommandService
@@ -21,7 +22,7 @@ public class CommandServiceImpl implements ICommandService {
     /**
      * {@inheritDoc}
      */
-    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) {
+    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) throws IOException {
 
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         Host host = theHostService.getHostById(application.getHostId());
