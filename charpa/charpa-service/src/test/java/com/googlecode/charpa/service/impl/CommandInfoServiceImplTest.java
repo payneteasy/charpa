@@ -5,6 +5,7 @@ import com.googlecode.charpa.service.dao.impl.simple.ApplicationSimpleDao;
 import com.googlecode.charpa.service.dao.impl.simple.SimplePersister;
 import com.googlecode.charpa.service.dao.impl.simple.HostSimpleDao;
 import com.googlecode.charpa.service.model.CommandForList;
+import com.googlecode.charpa.service.domain.CommandInfo;
 
 import java.util.List;
 
@@ -39,5 +40,8 @@ public class CommandInfoServiceImplTest extends TestCase {
         assertEquals(1, cmd.getApplicationId());
         assertEquals("testhost", cmd.getHostname());
 
+        CommandInfo commandInfo = commandInfoService.getCommandInfo(cmd.getApplicationId(), "test.sh");
+        assertNotNull(commandInfo);
+//        assertEquals(1, commandInfo.getVariables().size());
     }
 }

@@ -2,6 +2,8 @@ package com.googlecode.charpa.service;
 
 import com.googlecode.charpa.progress.service.ProgressId;
 
+import java.io.IOException;
+
 /**
  * Executes command
  */
@@ -13,5 +15,5 @@ public interface ICommandService {
      * @param aApplicationId application id
      * @param aCommand       command
      */
-    void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand);
+    void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand) throws IOException;
 }

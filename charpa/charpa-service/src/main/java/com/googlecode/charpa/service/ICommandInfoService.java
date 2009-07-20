@@ -4,6 +4,7 @@ import com.googlecode.charpa.service.domain.CommandInfo;
 import com.googlecode.charpa.service.model.CommandForList;
 
 import java.util.List;
+import java.io.IOException;
 
 /**
  * Gets information about command
@@ -17,7 +18,7 @@ public interface ICommandInfoService {
      * @param aCommandName   command name
      * @return command info
      */
-    CommandInfo getCommandInfo(long aApplicationId, String aCommandName);
+    CommandInfo getCommandInfo(long aApplicationId, String aCommandName) throws IOException;
 
     /**
      * Gets all commands
