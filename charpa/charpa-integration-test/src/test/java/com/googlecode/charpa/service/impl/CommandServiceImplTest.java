@@ -51,7 +51,7 @@ public class CommandServiceImplTest extends TestCase {
         commandService.setSecurityShellService(sshService);
 
         ProgressId id = progressService.createProgressId("Executes test command");
-        commandService.executeCommand(id, 1L, "test.sh");
+        commandService.executeCommand(id, 1L, "test.sh", null);
 
     }
 }

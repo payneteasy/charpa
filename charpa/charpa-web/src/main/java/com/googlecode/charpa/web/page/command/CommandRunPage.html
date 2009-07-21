@@ -5,24 +5,28 @@
 <body>
 <wicket:extend>
     <h1>Run command: <span wicket:id="command-name">command name</span></h1>
-    <table class="ae-table" border="1">
-        <thead>
-            <tr>
-                <th>Variable name</th>
-                <th>Comment</th>
-                <th>Default value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr wicket:id="variables">
-                <td><span wicket:id="variable-name">SOURCE_DIR</span></td>
-                <td><span wicket:id="variable-comment">comment</span></td>
-                <td><span wicket:id="variable-default-value">testapplication</span></td>
-            </tr>
-        </tbody>
-    </table>
+    <form wicket:id="form">
+        <table class="ae-table" border="1">
+            <thead>
+                <tr>
+                    <th>Variable name</th>
+                    <th>Comment</th>
+                    <th>Default value</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr wicket:id="variables">
+                    <td><span wicket:id="variable-name">SOURCE_DIR</span></td>
+                    <td><span wicket:id="variable-comment">comment</span></td>
+                    <td><span wicket:id="variable-default-value">testapplication</span></td>
+                    <td><input type='text' wicket:id="variable-value" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input wicket:id="run" type="submit" value="Run Command" />
+    </form>
 
-    <button wicket:id="run">Run Command</button>
 </wicket:extend>
 
 </body>

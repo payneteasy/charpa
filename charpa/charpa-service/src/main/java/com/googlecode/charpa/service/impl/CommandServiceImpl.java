@@ -11,7 +11,11 @@ import com.googlecode.charpa.service.model.HttpProxyInfo;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
 
 /**
  * Implementation of ICommandService
@@ -21,7 +25,7 @@ public class CommandServiceImpl implements ICommandService {
     /**
      * {@inheritDoc}
      */
-    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) {
+    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand, Map<String, String> aEnv) {
 
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         Host host = theHostService.getHostById(application.getHostId());
@@ -38,7 +42,12 @@ public class CommandServiceImpl implements ICommandService {
         User user = theUserDao.getUserById(application.getUserId());
 
         try {
+
             CommandInfo command = theCommandInfoService.getCommandInfo(aApplicationId, aCommand);
+
+            // creates tar-gz archive
+            String uniqueId = UUID.randomUUID().toString();
+            File tarGzFile = createTarGzArchive(uniqueId, command.getLocalFile(), aEnv);
 
             HttpProxyInfo httpProxyInfo = createProxyInfo(host.getHttpProxy());
             // copy command to remote host
@@ -61,7 +70,7 @@ public class CommandServiceImpl implements ICommandService {
                     , host.getSshPort()
                     , user.getUsername()
                     , user.getPassword()
-                    , null
+                    , aEnv
                     , String.format("chmod +x ./%s && ./%s && rm ./%s", aCommand, aCommand, aCommand)
                     , null
                     , new ICommandOutputListener() {
@@ -89,6 +98,20 @@ public class CommandServiceImpl implements ICommandService {
             theProgressManagerService.progressFailed(aProgressId, e);
         }
 
+    }
+
+    private File createTarGzArchive(String aUniqueId, File aCommandFile, Map<String, String> aEnv) throws FileNotFoundException {
+        File dir = new File(aUniqueId);
+        dir.mkdirs();
+
+        // creates env file
+        PrintWriter out = new PrintWriter(new File(dir, "setenv.sh"));
+        try {
+
+        } finally {
+            out.close();
+        }
+        return null;
     }
 
     /**
