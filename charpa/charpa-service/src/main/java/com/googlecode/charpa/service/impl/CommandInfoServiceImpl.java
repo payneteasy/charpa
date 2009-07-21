@@ -7,6 +7,7 @@ import com.googlecode.charpa.service.model.CommandForList;
 import com.googlecode.charpa.service.model.VariableInfo;
 import com.googlecode.charpa.service.domain.CommandInfo;
 import com.googlecode.charpa.service.domain.Application;
+import com.googlecode.charpa.service.domain.Host;
 
 import java.io.*;
 import java.util.List;
@@ -14,26 +15,40 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Implementation of ICommandInfoService
  */
 public class CommandInfoServiceImpl implements ICommandInfoService {
 
-    // $VARIABLE=${VARIABLE:-default}
-    public static final Pattern VARIABLE_PATTERN = Pattern.compile("");
-    public static final Pattern COMMENT_PATTERN  = Pattern.compile("^#");
+    private final Logger LOG = LoggerFactory.getLogger(CommandInfoServiceImpl.class);
+
+    // $VARIABLE=${ENV_VARIABLE:-default}
+    public static final Pattern VARIABLE_PATTERN = Pattern.compile("^(.*?)=\\$\\{(.*)\\:-(.*)\\}");
+    // # comment
+    public static final Pattern COMMENT_PATTERN  = Pattern.compile("^#(.*)");
 
     /**
      * {@inheritDoc}
      */
     public CommandInfo getCommandInfo(long aApplicationId, String aCommandName) throws IOException {
         CommandInfo info = new CommandInfo();
+
         File appDir = new File(theCommandsDir, String.valueOf(aApplicationId));
         if(!appDir.exists()) throw new IllegalStateException("Directory "+appDir.getAbsolutePath()+" is not exists");
+
         File commandFile = new File(appDir, aCommandName);
         if(!commandFile.exists()) throw new IllegalStateException("Command "+commandFile.getAbsolutePath()+" is not exists");
         info.setLocalFile(commandFile);
 
+        Application application = theApplicationDao.getApplicationById(aApplicationId);
+        info.setApplicationName(application.getApplicationName());
+
+        Host host = theHostDao.getHostById(aApplicationId);
+        info.setHostname(host.getHostname());
+        
         // adds variables infos
         addVariablesInfos(info);
         return info;
@@ -45,12 +60,22 @@ public class CommandInfoServiceImpl implements ICommandInfoService {
             String line;
             String comment = null;
             while ( (line=in.readLine()) !=null) {
-                if(VARIABLE_PATTERN.matcher(line).matches()) {
+                // VARIABLE
+                if(VARIABLE_PATTERN.matcher(line).find()) {
                     VariableInfo variable = createVariableInfo(line, comment);
-                    aCommandInfo.getVariables().add(variable);
-                }
-                if(COMMENT_PATTERN.matcher(line).matches()) {
-                    comment = line;
+                    if(variable!=null) {
+                        aCommandInfo.getVariables().add(variable);
+                        // clear comment
+                        comment = null;
+                    } else {
+                        LOG.warn("Cannot create variable info for line "+line);
+                    }
+                } else {
+                    // COMMENT
+                    Matcher commentMatcher = COMMENT_PATTERN.matcher(line);
+                    if(commentMatcher.find()) {
+                        comment = commentMatcher.group(1).trim();
+                    }
                 }
             }
         } finally {
@@ -60,9 +85,15 @@ public class CommandInfoServiceImpl implements ICommandInfoService {
 
     private VariableInfo createVariableInfo(String aLine, String aComment) {
         Matcher matcher = VARIABLE_PATTERN.matcher(aLine);
-        matcher.find();
-        System.out.println("matcher.group() = " + matcher.group());
-        return new VariableInfo();
+        if(matcher.find() && matcher.groupCount()==3) {
+            VariableInfo info = new VariableInfo();
+            info.setComment(aComment);
+            info.setName(matcher.group(2));
+            info.setDefaultValue(matcher.group(3));
+            return info;
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -3,16 +3,15 @@ package com.googlecode.charpa.service.impl;
 import com.googlecode.charpa.progress.service.IProgressManagerService;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.service.*;
-import com.googlecode.charpa.service.model.HttpProxyInfo;
 import com.googlecode.charpa.service.dao.IApplicationDao;
 import com.googlecode.charpa.service.dao.IUserDao;
 import com.googlecode.charpa.service.domain.*;
+import com.googlecode.charpa.service.model.HttpProxyInfo;
 
-import java.util.Map;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.io.IOException;
 
 /**
  * Implementation of ICommandService
@@ -22,7 +21,7 @@ public class CommandServiceImpl implements ICommandService {
     /**
      * {@inheritDoc}
      */
-    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) throws IOException {
+    public void executeCommand(final ProgressId aProgressId, long aApplicationId, String aCommand) {
 
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         Host host = theHostService.getHostById(application.getHostId());
@@ -37,9 +36,10 @@ public class CommandServiceImpl implements ICommandService {
         );
 
         User user = theUserDao.getUserById(application.getUserId());
-        CommandInfo command = theCommandInfoService.getCommandInfo(aApplicationId, aCommand);
 
         try {
+            CommandInfo command = theCommandInfoService.getCommandInfo(aApplicationId, aCommand);
+
             HttpProxyInfo httpProxyInfo = createProxyInfo(host.getHttpProxy());
             // copy command to remote host
             theProgressManagerService.setProgressText(aProgressId, String.format("Copy file %s to %s...", aCommand, host.getHostname()));

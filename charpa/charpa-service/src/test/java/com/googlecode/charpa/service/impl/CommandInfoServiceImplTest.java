@@ -5,6 +5,7 @@ import com.googlecode.charpa.service.dao.impl.simple.ApplicationSimpleDao;
 import com.googlecode.charpa.service.dao.impl.simple.SimplePersister;
 import com.googlecode.charpa.service.dao.impl.simple.HostSimpleDao;
 import com.googlecode.charpa.service.model.CommandForList;
+import com.googlecode.charpa.service.model.VariableInfo;
 import com.googlecode.charpa.service.domain.CommandInfo;
 
 import java.util.List;
@@ -42,6 +43,10 @@ public class CommandInfoServiceImplTest extends TestCase {
 
         CommandInfo commandInfo = commandInfoService.getCommandInfo(cmd.getApplicationId(), "test.sh");
         assertNotNull(commandInfo);
-//        assertEquals(1, commandInfo.getVariables().size());
+        assertEquals(1, commandInfo.getVariables().size());
+        VariableInfo var = commandInfo.getVariables().get(0);
+        assertEquals("ENV_SOURCE_DIR", var.getName());
+        assertEquals("~/svn/project-source", var.getDefaultValue());
+        assertEquals("source dir", var.getComment());
     }
 }

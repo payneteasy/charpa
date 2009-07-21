@@ -15,5 +15,5 @@ public interface ICommandService {
      * @param aApplicationId application id
      * @param aCommand       command
      */
-    void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand) throws IOException;
+    void executeCommand(ProgressId aProgressId, long aApplicationId, String aCommand) ;
 }
