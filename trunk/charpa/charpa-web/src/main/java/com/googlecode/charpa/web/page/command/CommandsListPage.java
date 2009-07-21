@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.PageParameters;
 
 /**
@@ -26,42 +27,20 @@ public class CommandsListPage extends BasePage {
                 aItem.add(new Label("command-application", cmd.getApplicationName()));
                 aItem.add(new Label("command-host", cmd.getHostname()));
 
+                PageParameters parameters = new PageParameters();
+                parameters.put("appId", String.valueOf(cmd.getApplicationId()));
+                parameters.put("command", cmd.getCommandName());
                 aItem.add(
-                        new RunCommandLink("command-run-link", cmd)
-                        .add(new Label("command-name", cmd.getCommandName()))
+                        new BookmarkablePageLink<CommandRunPage>("command-run-link", CommandRunPage.class, parameters)
+                        .add(new Label("command-name", cmd.getCommandName()))                        
                 );
+//                aItem.add(
+//                        new RunCommandLink("command-run-link", cmd)
+//                        .add(new Label("command-name", cmd.getCommandName()))
+//                );
             }
         });
     }
-
-    private class RunCommandLink extends Link {
-        public RunCommandLink(String id, CommandForList aCommand) {
-            super(id);
-            theCommand = aCommand;
-        }
-
-        public void onClick() {
-            final ProgressId progressId = theProgressInfoService.createProgressId(
-                    String.format("Run %s/%s/%s"
-                            , theCommand.getHostname(), theCommand.getApplicationName(), theCommand.getCommandName()));
-            theProgressInfoService.invoke(progressId, new Runnable() {
-                public void run() {
-                    theCommandService.executeCommand(progressId, theCommand.getApplicationId(), theCommand.getCommandName());
-                }
-            });
-            PageParameters parameters = new PageParameters();
-            parameters.put("id", progressId.toString());
-            setResponsePage(ProgressPage.class, parameters);
-        }
-
-        private final CommandForList theCommand;
-
-        @SpringBean
-        private IProgressInfoService theProgressInfoService;
-        @SpringBean
-        private ICommandService theCommandService;
-    }
-
 
     @SpringBean
     private ICommandInfoService theCommandInfoService;

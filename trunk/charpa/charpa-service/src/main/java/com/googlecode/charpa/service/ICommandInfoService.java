@@ -17,6 +17,7 @@ public interface ICommandInfoService {
      * @param aApplicationId app id
      * @param aCommandName   command name
      * @return command info
+     * @throws java.io.IOException on io error
      */
     CommandInfo getCommandInfo(long aApplicationId, String aCommandName) throws IOException;
 

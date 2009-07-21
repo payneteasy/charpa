@@ -19,6 +19,18 @@ public class CommandInfo implements Serializable {
     /** Variables */
     public List<VariableInfo> getVariables() { return theVariables ; }
 
+    /** Application name */
+    public String getApplicationName() { return theApplicationName ; }
+    public void setApplicationName(String aApplicationName) { theApplicationName = aApplicationName ; }
+
+    /** Hostname */
+    public String getHostname() { return theHostname ; }
+    public void setHostname(String aHostname) { theHostname = aHostname ; }
+
+    /** Hostname */
+    private String theHostname ;
+    /** Application name */
+    private String theApplicationName ;
     /** Variables */
     private List<VariableInfo> theVariables = new LinkedList<VariableInfo>();
     /** Local File */

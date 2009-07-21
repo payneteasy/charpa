@@ -1,0 +1,30 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<head>
+    <title>List of commands</title>
+</head>
+<body>
+<wicket:extend>
+    <h1>Run command: <span wicket:id="command-name">command name</span></h1>
+    <table class="ae-table" border="1">
+        <thead>
+            <tr>
+                <th>Variable name</th>
+                <th>Comment</th>
+                <th>Default value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr wicket:id="variables">
+                <td><span wicket:id="variable-name">SOURCE_DIR</span></td>
+                <td><span wicket:id="variable-comment">comment</span></td>
+                <td><span wicket:id="variable-default-value">testapplication</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button wicket:id="run">Run Command</button>
+</wicket:extend>
+
+</body>
+</html>
+
