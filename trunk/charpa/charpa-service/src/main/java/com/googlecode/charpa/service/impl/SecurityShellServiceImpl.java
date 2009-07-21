@@ -116,12 +116,21 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
         try {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             try {
-                channel.setCommand(aCommand);
+
                 channel.setInputStream(null);
                 channel.setErrStream(null);
                 channel.setOutputStream(System.out);
 
+                // env variables
+                for (Map.Entry<String, String> entry : aEnv.entrySet()) {
+                    channel.setEnv(entry.getKey().getBytes(), entry.getValue().getBytes());
+                }
+                
+                channel.setCommand(aCommand);
+
                 channel.connect(DEFAULT_TIMEOUT);
+
+
                 try {
                     try {
                         processExec(channel.getInputStream(), channel.getErrStream(), channel, aCommandOutputListener);
