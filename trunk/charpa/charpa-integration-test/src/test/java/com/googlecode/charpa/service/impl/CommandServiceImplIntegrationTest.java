@@ -11,9 +11,9 @@ import com.googlecode.charpa.progress.service.ProgressId;
 /**
  * 
  */
-public class CommandServiceImplTest extends TestCase {
+public class CommandServiceImplIntegrationTest extends TestCase {
 
-    public static final String CONFIG_XML = "src/test/resources/CommandServiceImplTest/config.xml";
+    public static final String CONFIG_XML = "src/test/resources/CommandServiceImplIntegrationTest/config.xml";
     
     public void test() throws Exception {
         SimplePersister persister = new SimplePersister(CONFIG_XML);
@@ -39,7 +39,7 @@ public class CommandServiceImplTest extends TestCase {
 
         // command info
         CommandInfoServiceImpl commandInfoService = new CommandInfoServiceImpl();
-        commandInfoService.setCommandsDirName("src/test/resources/CommandServiceImplTest");
+        commandInfoService.setCommandsDirName("src/test/resources/CommandServiceImplIntegrationTest");
         commandService.setCommandInfoService(commandInfoService);
 
         // progress

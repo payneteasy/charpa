@@ -121,11 +121,6 @@ public class SecurityShellServiceImpl implements ISecurityShellService {
                 channel.setErrStream(null);
                 channel.setOutputStream(System.out);
 
-                // env variables
-                for (Map.Entry<String, String> entry : aEnv.entrySet()) {
-                    channel.setEnv(entry.getKey().getBytes(), entry.getValue().getBytes());
-                }
-                
                 channel.setCommand(aCommand);
 
                 channel.connect(DEFAULT_TIMEOUT);
