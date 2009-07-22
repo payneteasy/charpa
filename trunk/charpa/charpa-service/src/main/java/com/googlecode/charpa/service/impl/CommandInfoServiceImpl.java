@@ -46,7 +46,7 @@ public class CommandInfoServiceImpl implements ICommandInfoService {
         Application application = theApplicationDao.getApplicationById(aApplicationId);
         info.setApplicationName(application.getApplicationName());
 
-        Host host = theHostDao.getHostById(aApplicationId);
+        Host host = theHostDao.getHostById(application.getHostId());
         info.setHostname(host.getHostname());
         
         // adds variables infos
