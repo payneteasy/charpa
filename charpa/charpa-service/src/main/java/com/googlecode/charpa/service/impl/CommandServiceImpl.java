@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
+import java.io.*;
+
+import org.springframework.util.Assert;
+import org.apache.wicket.util.io.IOUtils;
 
 /**
  * Implementation of ICommandService
@@ -46,7 +47,7 @@ public class CommandServiceImpl implements ICommandService {
             CommandInfo command = theCommandInfoService.getCommandInfo(aApplicationId, aCommand);
 
             // creates tar-gz archive
-            String uniqueId = UUID.randomUUID().toString();
+            String uniqueId = "ch-"+System.currentTimeMillis();
             File tarGzFile = createTarGzArchive(uniqueId, command.getLocalFile(), aEnv);
 
             HttpProxyInfo httpProxyInfo = createProxyInfo(host.getHttpProxy());
@@ -56,7 +57,7 @@ public class CommandServiceImpl implements ICommandService {
                     , host.getSshPort()
                     , user.getUsername()
                     , user.getPassword()
-                    , command.getLocalFile()
+                    , tarGzFile
                     , "."
                     , httpProxyInfo
             );
@@ -71,7 +72,8 @@ public class CommandServiceImpl implements ICommandService {
                     , user.getUsername()
                     , user.getPassword()
                     , aEnv
-                    , String.format("chmod +x ./%s && ./%s && rm ./%s", aCommand, aCommand, aCommand)
+//                    , String.format("chmod +x ./%s && ./%s && rm ./%s", aCommand, aCommand, aCommand)
+                    , String.format("tar xzf %s && cd %s && chmod +x *.sh && source setenv.sh && ./%s", tarGzFile.getName(), uniqueId, aCommand)
                     , null
                     , new ICommandOutputListener() {
                 public void onOutputLine(Level aLevel, String aLine) {
@@ -100,18 +102,60 @@ public class CommandServiceImpl implements ICommandService {
 
     }
 
-    private File createTarGzArchive(String aUniqueId, File aCommandFile, Map<String, String> aEnv) throws FileNotFoundException {
-        File dir = new File(aUniqueId);
+    /**
+     * Creates tar gz archive
+     * @param aUniqueId     unique id
+     * @param aCommandFile  command file to include in archive
+     * @param aEnv          environment variables
+     * @return              tar gz archive file
+     * @throws IOException on io error
+     * @throws InterruptedException on creating tar archive error
+     */
+    protected File createTarGzArchive(String aUniqueId, File aCommandFile, Map<String, String> aEnv) throws IOException, InterruptedException {
+
+        // make
+        File dir = new File(theArchivesDirectory, aUniqueId);
         dir.mkdirs();
 
         // creates env file
         PrintWriter out = new PrintWriter(new File(dir, "setenv.sh"));
         try {
-
+            for (Map.Entry<String, String> entry : aEnv.entrySet()) {
+                out.printf("export %s=%s\n",entry.getKey(), entry.getValue()) ;
+            }
         } finally {
             out.close();
         }
-        return null;
+
+        // copy command file
+        copyFile(aCommandFile, new File(dir, aCommandFile.getName()));
+
+        // executes tar czf
+        File file = new File(theArchivesDirectory, aUniqueId+".tgz");
+        String cmd = String.format("tar czf %s %s", file.getName(), aUniqueId);
+        Process process = Runtime.getRuntime().exec(cmd, null, new File(theArchivesDirectory));
+        int result = process.waitFor();
+        Assert.isTrue(result==0, "Could not execute "+cmd);
+        return file;
+    }
+
+    private void copyFile(File aSource, File aDest) throws IOException {
+        final int SIZE = 2048;
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(aDest), SIZE);
+        try {
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(aSource), SIZE);
+            try {
+                byte[] buf = new byte[SIZE];
+                int count;
+                while ( (count = in.read(buf, 0, SIZE)) >= 0) {
+                    out.write(buf, 0, count);
+                }
+            } finally {
+                in.close();
+            }
+        } finally {
+            out.close();
+        }
     }
 
     /**
@@ -177,6 +221,11 @@ public class CommandServiceImpl implements ICommandService {
         theCommandInfoService = aCommandInfoService;
     }
 
+    /** Archives directory */
+    public void setArchivesDirectory(String aArchivesDirectory) { theArchivesDirectory = aArchivesDirectory ; }
+
+    /** Archives directory */
+    private String theArchivesDirectory = "archives";
     /**
      * ICommandInfoService
      */
