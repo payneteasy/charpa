@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
-    <groupId>com.googlecode.charpa-wicket</groupId>
+    <groupId>com.googlecode.charpa.charpa-wicket</groupId>
     <artifactId>charpa-wicket-web</artifactId>
     <version>1.0-1-SNAPSHOT</version>
 
     <name>.charpa-wicket-web                    ${version}</name>
 
     <parent>
-        <groupId>com.googlecode</groupId>
+        <groupId>com.googlecode.charpa</groupId>
         <artifactId>charpa-wicket</artifactId>
         <version>1.0-1-SNAPSHOT</version>
     </parent>
@@ -18,7 +18,7 @@
 
         <!-- CHARPA WICKET SERVICE -->
         <dependency>
-            <groupId>com.googlecode.charpa-wicket</groupId>
+            <groupId>com.googlecode.charpa.charpa-wicket</groupId>
             <artifactId>charpa-wicket-service</artifactId>
         </dependency>
 
