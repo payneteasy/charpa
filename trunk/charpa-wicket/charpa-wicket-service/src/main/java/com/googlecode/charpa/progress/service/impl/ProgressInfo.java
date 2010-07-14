@@ -1,16 +1,14 @@
 package com.googlecode.charpa.progress.service.impl;
 
-import com.googlecode.charpa.progress.service.IProgressInfo;
-import com.googlecode.charpa.progress.service.ProgressState;
-import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.progress.service.LogMessage;
+import com.googlecode.charpa.progress.service.ProgressId;
+import com.googlecode.charpa.progress.service.ProgressState;
 
 import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Progress info

@@ -11,7 +11,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.PageParameters;
@@ -26,8 +25,11 @@ public class ListProgressesPanel extends Panel {
     /**
      * {@inheritDoc}
      */
-    public ListProgressesPanel(String aId, final Class<? extends Page> aProgressPanelClass) {
+    public ListProgressesPanel(String aId, final Class<? extends Page> aProgressPanelClass, IProgressInfoService aProgressInfoService) {
         super(aId);
+
+        theProgressInfoService = aProgressInfoService;
+        
         WebMarkupContainer panel = new WebMarkupContainer("progresses-panel");
         add(panel);
 
@@ -64,7 +66,5 @@ public class ListProgressesPanel extends Panel {
         panel.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(3)));
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    @SpringBean
-    private IProgressInfoService theProgressInfoService;
+    private final IProgressInfoService theProgressInfoService;
 }
