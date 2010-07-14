@@ -3,19 +3,19 @@ package com.googlecode.charpa.web.progress;
 import com.googlecode.charpa.progress.service.*;
 import com.googlecode.charpa.web.component.ConfirmAjaxLink;
 import com.googlecode.charpa.web.util.FormatUtils;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.model.*;
-import org.apache.wicket.util.time.Duration;
-import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.springframework.util.Assert;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.util.time.Duration;
 
 import java.util.List;
 
@@ -24,10 +24,14 @@ import java.util.List;
  */
 public class ProgressPanel extends Panel {
 
-    public ProgressPanel(String aId, final PageParameters aParameters) {
+    public ProgressPanel(String aId, final PageParameters aParameters, IProgressInfoService aProgressInfoService) {
         super(aId);
+
+        theProgressInfoService = aProgressInfoService;
+        
         String idString = aParameters.getString("id");
-        Assert.hasText(idString, "There was no id paramater given");
+
+        if(idString==null || idString.trim().length()==0) throw new IllegalStateException("There was no id parameter given");
 
         WebMarkupContainer panel = new WebMarkupContainer("panel");
         add(panel);
@@ -60,7 +64,7 @@ public class ProgressPanel extends Panel {
         panel.add(progressToBeDone);
         progressToBeDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel() {
             public Object getObject() {
-                IProgressInfo info = (IProgressInfo) model.getObject();
+                IProgressInfo info = model.getObject();
                 return 400 - Math.round((info.getCurrentValue() / (float)info.getMax()) * 400);            
             }
         }));
@@ -161,6 +165,6 @@ public class ProgressPanel extends Panel {
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
-    @SpringBean
-    private IProgressInfoService theProgressInfoService;
+
+    private final IProgressInfoService theProgressInfoService;
 }

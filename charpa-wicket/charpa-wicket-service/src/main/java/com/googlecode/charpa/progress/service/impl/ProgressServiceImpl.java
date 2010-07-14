@@ -1,9 +1,7 @@
 package com.googlecode.charpa.progress.service.impl;
 
 import com.googlecode.charpa.progress.service.*;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.Period;
-import org.springframework.util.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +74,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         }
 
         return new ImmutableProgressInfo(aProgressInfo.getId(), aProgressInfo.getName(), aProgressInfo.getMax()
-                , StringUtils.left(aProgressInfo.getProgressText(), 100)
+                , aProgressInfo.getProgressText()
                 , aProgressInfo.getCurrentValue()
                 , aProgressInfo.getState()
                 , aProgressInfo.getPageParameters()
@@ -191,8 +189,16 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
      * @return progress info
      */
     private ProgressInfo findProgress(ProgressId aProgressId) {
+        if(aProgressId==null) {
+            throw new IllegalStateException("progress id is null");
+        }
+
         ProgressInfo info = theProgresses.get(aProgressId);
-        Assert.notNull(info, "Progress with id "+aProgressId+" was not found");
+
+        if(info == null) {
+            throw new IllegalStateException("Progress with id "+aProgressId+" was not found");
+        }
+
         return info;
     }
 

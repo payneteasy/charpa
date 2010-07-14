@@ -1,7 +1,5 @@
 package com.googlecode.charpa.progress.service;
 
-import com.googlecode.charpa.progress.service.impl.ProgressInfo;
-
 import java.util.List;
 import java.util.Map;
 
