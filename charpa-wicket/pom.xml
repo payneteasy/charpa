@@ -17,7 +17,7 @@
     <scm>
         <connection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</connection>
         <developerConnection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</developerConnection>
-        <url>http://googlecode.com/p/charpa</url>
+        <url>http://code.google.com/p/charpa/source/browse/</url>
     </scm>
 
     <!--
@@ -26,13 +26,13 @@
     <distributionManagement>
         <repository>
             <id>charpa-release</id>
-            <name>Local Maven repository of releases</name>
-            <url>https://charpa.googlecode.com/svn/trunk/mavenrepo/release</url>
+            <name>sonatype oss RELEASE repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>charpa-snapshot</id>
-            <name>Local Maven repository of snapshots</name>
-            <url>https://charpa.googlecode.com/svn/trunk/mavenrepo/snapshot</url>
+            <name>sonatype oss SNAPSHOT repository</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
