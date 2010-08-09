@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<head>
+    <title>Progress info</title>
+</head>
+<body>
+<wicket:head>
+    <style type="text/css">
+        tr.state-finished td {
+            color: green;
+        }
+
+        tr.state-failed {
+            color: red;
+        }
+
+        tr.state-running {
+            font-weight: bold;
+        }
+
+        tr.state-pending {
+            color: gray;
+        }
+
+        tr.state-pending td.state {
+            text-decoration: blink;
+        }
+
+        td.value {
+            text-align: center;
+        }
+
+        td.running {
+            text-align: right;
+        }
+    </style>
+</wicket:head>
+<wicket:panel>
+
+    <h1>Tasks</h1>
+    <table border="1" class="ae-table">
+        <head>
+            <th>Name</th>
+            <th>Info</th>
+            <th>Progress</th>
+            <th>State</th>
+            <th>Started</th>
+            <th>Running time</th>
+        </head>
+        <tbody wicket:id="progresses-panel">
+            <tr wicket:id="progresses">
+                <td class="name"><a href="#" wicket:id="progress-link"><span wicket:id="progress-name">Test</span></a></td>
+                <td class="text"><span wicket:id="progress-text">Test</span></td>
+                <td class="value"><span wicket:id="progress-value">12</span> / <span wicket:id="progress-max">12</span></td>
+                <td class="state"><span wicket:id="progress-state">RUNNING</span></td>
+                <td class="started"><span wicket:id="progress-started">2008.01.01 01:01:01</span></td>
+                <td class="running"><span wicket:id="progress-running-time">1m 2sec</span></td>
+            </tr>
+        </tbody>
+    </table>
+</wicket:panel>
+</body>
+</html>
+
