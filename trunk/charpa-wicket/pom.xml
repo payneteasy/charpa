@@ -8,6 +8,10 @@
 
     <name>charpa-wicket                         ${version}</name>
 
+    <description>A java persistence engine for stored procedures</description>
+
+    <url>http://charpa.googlecode.com</url>
+
     <modules>
         <module>charpa-wicket-service</module>
         <module>charpa-wicket-web</module>
@@ -18,6 +22,31 @@
         <developerConnection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</developerConnection>
         <url>http://code.google.com/p/charpa/source/browse/</url>
     </scm>
+
+    <developers>
+        <developer>
+            <name>Evgeniy Sinev</name>
+            <email>esinev@gmail.com</email>
+        </developer>
+        <developer>
+            <email>gendlin@gmail.com</email>
+        </developer>
+        <developer>
+            <email>mgoryachkin@gmail.com</email>
+        </developer>
+        <developer>
+            <email>kuccyp@gmail.com</email>
+        </developer>
+        <developer>
+            <email>slava.zarubin@gmail.com</email>
+        </developer>
+        <developer>
+            <email>roman.puchkovskiy@gmail.com</email>
+        </developer>
+        <developer>
+            <email>sfkononov@gmail.com</email>
+        </developer>
+    </developers>
 
     <!--
     -      Distributions
@@ -126,6 +155,7 @@
 
         </dependencies>
     </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -155,8 +185,50 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- signs artifacts. This profile will be activated when the value of maven property performRelease is true -->
+    <profiles>
+        <profile>
+            <id>release-profile</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+
+                    <!-- SIGNS -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <properties>
         <wicket.version>1.4.8</wicket.version>
         <jetty.version>6.1.4</jetty.version>
     </properties>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
 </project>
