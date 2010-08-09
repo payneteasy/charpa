@@ -149,6 +149,10 @@ public class ProgressInfo implements Serializable {
     	theCurrentValue.set(aValue);
     }
     
+    public void setLeftTime(long aTime) {
+    	theLeftTime.set(aTime);
+    }
+    
     /**
      * Progress state
      */
