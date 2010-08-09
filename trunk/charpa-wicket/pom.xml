@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-1-SNAPSHOT</version>
+                <version>1.0-2-SNAPSHOT</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->

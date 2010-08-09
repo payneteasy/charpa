@@ -90,7 +90,6 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
                 , aProgressInfo.getEndedTime()
                 , elapsedPeriod
                 , leftPeriod
-                , aProgressInfo.getLogMessages()
         );
     }
 
@@ -114,6 +113,10 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
             LOG.debug("{}: CANCELLED", aProgressId);
         }
     }
+    
+	public List<LogMessage> getLastLogMessages(ProgressId aId, int aCount) {
+		return theStorageStrategy.listLatestLogMessages(aId, aCount);
+	}
 
     ////////////////////////////////
     // MANAGER INTERFACE

@@ -1,13 +1,13 @@
 package com.googlecode.charpa.progress.service.impl;
 
-import com.googlecode.charpa.progress.service.IProgressInfo;
-import com.googlecode.charpa.progress.service.ProgressState;
-import com.googlecode.charpa.progress.service.ProgressId;
-import com.googlecode.charpa.progress.service.LogMessage;
-
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 
 import org.joda.time.Period;
+
+import com.googlecode.charpa.progress.service.IProgressInfo;
+import com.googlecode.charpa.progress.service.ProgressId;
+import com.googlecode.charpa.progress.service.ProgressState;
 
 /**
  *  Immutable ProgressInfo
@@ -17,7 +17,6 @@ public class ImmutableProgressInfo implements IProgressInfo {
             , ProgressState aState, Map<String, String> aPageParameters
             , Date aCreatedTime, Date aStartedTime, Date aEndedTime
             , Period aElapsedTime, Period aLeftTime
-            , List<LogMessage> aLogMessages  
     ) {
         theMax = aMax;
         theText = aText;
@@ -31,7 +30,6 @@ public class ImmutableProgressInfo implements IProgressInfo {
         theLeftTime = aLeftTime;
         theElapsedTime = aElapsedTime;
         theStartedTime = aStartedTime;
-        theLogMessages = aLogMessages;
     }
 
     public String getName() {
@@ -82,18 +80,6 @@ public class ImmutableProgressInfo implements IProgressInfo {
         return theLeftTime;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<LogMessage> getLastLogMessages(int aCount) {
-        LinkedList<LogMessage> list = new LinkedList<LogMessage>();
-        int size = theLogMessages.size();
-        for(int i=0; i<aCount && i < size; i++) {
-            list.add(0, theLogMessages.get(size - i - 1));
-        }
-        return list;
-    }
-
     private final ProgressId theProgressId;
     private final int theMax;
     private final String theText;
@@ -106,5 +92,4 @@ public class ImmutableProgressInfo implements IProgressInfo {
     private final Date theCreatedTime;
     private final Period theElapsedTime;
     private final Period theLeftTime;
-    private final List<LogMessage> theLogMessages;
 }

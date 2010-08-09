@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import com.googlecode.charpa.progress.service.LogMessage;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.progress.service.ProgressState;
 import com.googlecode.charpa.progress.service.impl.ProgressInfo;
@@ -80,6 +83,15 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
         info.setProgressText(""); // removes "Starting ..." text
         info.setStartedTime(new Date());
         info.setState(ProgressState.RUNNING);
+	}
+
+	public List<LogMessage> listLatestLogMessages(ProgressId id, int limit) {
+        LinkedList<LogMessage> list = new LinkedList<LogMessage>();
+        int size = findProgress(id).getLogMessages().size();
+        for(int i=0; i < limit && i < size; i++) {
+            list.add(0, findProgress(id).getLogMessages().get(size - i - 1));
+        }
+        return list;
 	}
 
 }

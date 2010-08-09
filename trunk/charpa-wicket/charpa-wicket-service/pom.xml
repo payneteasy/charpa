@@ -5,14 +5,13 @@
 
     <groupId>com.googlecode.charpa.charpa-wicket</groupId>
     <artifactId>charpa-wicket-service</artifactId>
-    <version>1.0-2-SNAPSHOT</version>
 
     <name>.charpa-wicket-service                ${version}</name>
 
     <parent>
         <groupId>com.googlecode.charpa</groupId>
         <artifactId>charpa-wicket</artifactId>
-        <version>1.0-1-SNAPSHOT</version>
+        <version>1.0-2-SNAPSHOT</version>
     </parent>
 
     <dependencies>
