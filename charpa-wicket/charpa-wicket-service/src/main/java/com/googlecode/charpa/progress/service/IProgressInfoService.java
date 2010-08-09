@@ -24,11 +24,11 @@ public interface IProgressInfoService {
      */
     void cancelProgress(ProgressId aProgressId);
 
-//    /**
-//     * Get last messages
-//     * @param aCount count messages
-//     * @return messages
-//     */
-//    List<LogMessage> getLastLogMessages(ProgressId aId, int aCount) ;
-//
+    /**
+     * Get last messages
+     * @param aCount count messages
+     * @return messages
+     */
+    List<LogMessage> getLastLogMessages(ProgressId aId, int aCount) ;
+
 }

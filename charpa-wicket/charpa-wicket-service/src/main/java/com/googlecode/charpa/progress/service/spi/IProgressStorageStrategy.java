@@ -3,6 +3,7 @@ package com.googlecode.charpa.progress.service.spi;
 import java.util.Collection;
 import java.util.List;
 
+import com.googlecode.charpa.progress.service.LogMessage;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.progress.service.impl.ProgressInfo;
 
@@ -20,4 +21,5 @@ public interface IProgressStorageStrategy {
 	void progressFailed(ProgressId id, Exception exception);
 	void addInfoMessage(ProgressId id, String message);
 	void addErrorMessage(ProgressId id, String message);
+	List<LogMessage> listLatestLogMessages(ProgressId id, int limit);
 }

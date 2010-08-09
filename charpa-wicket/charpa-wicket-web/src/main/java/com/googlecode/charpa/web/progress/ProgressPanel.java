@@ -154,7 +154,7 @@ public class ProgressPanel extends Panel {
         // log messages
         LoadableDetachableModel<List<LogMessage>> logMessagesModel = new LoadableDetachableModel<List<LogMessage>>() {
             protected List<LogMessage> load() {
-                return model.getObject().getLastLogMessages(20);
+                return theProgressInfoService.getLastLogMessages(id, 20);
             }
         };
         panel.add(new ListView<LogMessage>("log-messages", logMessagesModel) {
