@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>charpa-wicket</artifactId>
     <groupId>com.googlecode.charpa</groupId>
-    <version>1.0-2-SNAPSHOT</version>
+    <version>1.0-2</version>
     <packaging>pom</packaging>
 
     <name>charpa-wicket                         ${version}</name>
@@ -15,9 +14,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</connection>
-        <developerConnection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</developerConnection>
-        <url>http://code.google.com/p/charpa/source/browse/</url>
+        <connection>scm:svn:https://charpa.googlecode.com/svn/tags/charpa-wicket-1.0-2</connection>
+        <developerConnection>scm:svn:https://charpa.googlecode.com/svn/tags/charpa-wicket-1.0-2</developerConnection>
+        <url>http://code.google.com/p/charpa/source/browse/tags/charpa-wicket-1.0-2</url>
     </scm>
 
     <!--
@@ -44,7 +43,7 @@
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-2-SNAPSHOT</version>
+                <version>1.0-2</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->
