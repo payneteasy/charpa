@@ -137,6 +137,18 @@ public class ProgressInfo implements Serializable {
         return theLogMessages;
     }
     
+    // the following two methods kinda break encapsulation :( they're to be
+    // used when restoring a ProgressInfo state from a DB or something like
+    // this; they should not be used when working with progresses!
+    
+    public void setCreatedTime(Date aTime) {
+    	theCreatedTime = aTime;
+    }
+    
+    public void setCurrentValue(int aValue) {
+    	theCurrentValue.set(aValue);
+    }
+    
     /**
      * Progress state
      */
@@ -159,7 +171,7 @@ public class ProgressInfo implements Serializable {
     private final AtomicReference<String> theProgressText;
 
     private final ProgressId theId;
-    private final Date theCreatedTime;
+    private Date theCreatedTime;
     private final Map<String, String> theMap;
     /** Started time */
     private final AtomicReference<Date> theStartedTime = new AtomicReference<Date>();
