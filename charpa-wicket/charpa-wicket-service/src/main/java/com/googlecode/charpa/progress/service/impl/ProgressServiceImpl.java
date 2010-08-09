@@ -1,6 +1,9 @@
 package com.googlecode.charpa.progress.service.impl;
 
 import com.googlecode.charpa.progress.service.*;
+import com.googlecode.charpa.progress.service.spi.IProgressStorageStrategy;
+import com.googlecode.charpa.progress.service.spi.InMemoryStorageStrategy;
+
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +27,13 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public ProgressId createProgressId(String aName) {
-        return createProgressId(aName, Collections.EMPTY_MAP);
+        return createProgressId(aName, Collections.<String, String>emptyMap());
     }
     
     public ProgressId createProgressId(String aName, Map<String, String> aPageParameters) {
         ProgressId id = new ProgressId(UUID.randomUUID().toString());
         ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
-        theProgresses.put(id, info);
+        theStorageStrategy.createProgress(id, info);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CREATED [ {} ]", id, aName);
         }
@@ -89,7 +92,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
 
     public List<IProgressInfo> listProgresses() {
         ArrayList<IProgressInfo> list = new ArrayList<IProgressInfo>();
-        for (ProgressInfo info : theProgresses.values()) {
+        for (ProgressInfo info : theStorageStrategy.listProgresses()) {
             list.add(createReadOnlyProgressInfo(info));
         }
 
@@ -102,9 +105,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void cancelProgress(ProgressId aProgressId) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.setState(ProgressState.CANCELLED);
-        info.setEndedTime(new Date());
+        theStorageStrategy.cancelProgress(aProgressId);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CANCELLED", aProgressId);
         }
@@ -115,12 +116,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     //
 
     public void startProgress(ProgressId aProgressId, String aProgressName, int aMaxValue) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.setName(aProgressName);
-        info.setMax(aMaxValue);
-        info.setProgressText(""); // removes "Starting ..." text
-        info.setStartedTime(new Date());
-        info.setState(ProgressState.RUNNING);
+        theStorageStrategy.startProgress(aProgressId, aProgressName, aMaxValue);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: STARTED [ {} ]", aProgressId, aProgressName);
         }
@@ -130,39 +126,32 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: text: {}", aProgressId, aProgressText);
         }
-        findProgress(aProgressId).setProgressText(aProgressText);
+        theStorageStrategy.changeProgressText(aProgressId, aProgressText);
     }
 
     public void incrementProgressValue(ProgressId aProgressId) {
-        findProgress(aProgressId).incrementValue();
+        theStorageStrategy.incrementProgressValue(aProgressId);
     }
 
     public void finishProgress(ProgressId aProgressId) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.setEndedTime(new Date());
-        info.setState(ProgressState.FINISHED);
+        theStorageStrategy.finishProgress(aProgressId);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: FINISHED", aProgressId);
         }
     }
 
     public boolean isCancelled(ProgressId aProgressId) {
-        ProgressInfo info = findProgress(aProgressId);
-        return info.getState() == ProgressState.CANCELLED;
+        return theStorageStrategy.isCancelled(aProgressId);
     }
 
     public void setName(ProgressId aProgressId, String name) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.setName(name);   
+        theStorageStrategy.changeProgressName(aProgressId, name);   
     }
     
     public void progressFailed(ProgressId aProgressId, Exception aException) {
         LOG.error(aProgressId+": "+aException.getMessage(), aException);
 
-        ProgressInfo info = findProgress(aProgressId);
-        info.setState(ProgressState.FAILED);
-        info.setEndedTime(new Date());
-        info.setProgressText(aException.getMessage());
+        theStorageStrategy.progressFailed(aProgressId, aException);
         
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: FAILED", aProgressId);
@@ -170,13 +159,11 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void info(ProgressId aProgressId, String aInfoMessage) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.info(aInfoMessage);
+    	theStorageStrategy.addInfoMessage(aProgressId, aInfoMessage);
     }
 
     public void error(ProgressId aProgressId, String aErrorMessage) {
-        ProgressInfo info = findProgress(aProgressId);
-        info.error(aErrorMessage);
+    	theStorageStrategy.addErrorMessage(aProgressId, aErrorMessage);
     }
 
     ////////////////////////////////
@@ -193,7 +180,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
             throw new IllegalStateException("progress id is null");
         }
 
-        ProgressInfo info = theProgresses.get(aProgressId);
+        ProgressInfo info = theStorageStrategy.findProgress(aProgressId);
 
         if(info == null) {
             throw new IllegalStateException("Progress with id "+aProgressId+" was not found");
@@ -202,6 +189,6 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         return info;
     }
 
-    private Map<ProgressId, ProgressInfo> theProgresses = Collections.synchronizedMap(new HashMap<ProgressId, ProgressInfo>());
     private final Executor theExecutor = Executors.newSingleThreadExecutor();
+    private IProgressStorageStrategy theStorageStrategy = new InMemoryStorageStrategy();
 }
