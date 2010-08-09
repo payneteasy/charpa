@@ -25,6 +25,10 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         incrementProgressValue(id);
         finishProgress(id);
     }
+    
+    public void setStorageStrategy(IProgressStorageStrategy aStorageStrategy) {
+    	theStorageStrategy = aStorageStrategy;
+    }
 
     public ProgressId createProgressId(String aName) {
         return createProgressId(aName, Collections.<String, String>emptyMap());
