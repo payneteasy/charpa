@@ -36,4 +36,10 @@ public interface IProgressManagerService {
      * @param aProgressId progress id
      */
     void error(ProgressId aProgressId, String aErrorMessage);
+    
+    /**
+     * Removes progresses which have been finished or failed for some time ago,
+     * or did not start at all.
+     */
+    void removeStaleProgresses();
 }
