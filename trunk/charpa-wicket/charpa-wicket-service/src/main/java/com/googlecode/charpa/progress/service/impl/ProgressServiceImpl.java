@@ -39,6 +39,10 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     	theDefaultQualifier = aQualifier;
     }
     
+    public void setRemoveThresholdMillis(long aMillis) {
+    	theRemoveThresholdMillis = aMillis;
+    }
+    
     protected IProgressStorageStrategy selectStorageStrategy(ProgressId aProgressId) {
     	for (Entry<String, IProgressStorageStrategy> entry : theStorageStrategies.entrySet()) {
     		if (aProgressId.toString().startsWith(entry.getKey())) {
@@ -205,6 +209,16 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     public void error(ProgressId aProgressId, String aErrorMessage) {
     	selectStorageStrategy(aProgressId).addErrorMessage(aProgressId, aErrorMessage);
     }
+    
+	public void removeStaleProgresses() {
+		Date olderThan = new Date(new Date().getTime() - theRemoveThresholdMillis);
+		for (IProgressStorageStrategy strategy : theStorageStrategies.values()) {
+			strategy.deleteStaleProgresses(olderThan);
+		}
+		if (!theStorageStrategies.containsValue(theDefaultStorageStrategy)) {
+			theDefaultStorageStrategy.deleteStaleProgresses(olderThan);
+		}
+	}
 
     ////////////////////////////////
     // privates
@@ -233,4 +247,5 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     private Map<String, IProgressStorageStrategy> theStorageStrategies = new HashMap<String, IProgressStorageStrategy>();
     private IProgressStorageStrategy theDefaultStorageStrategy = new InMemoryStorageStrategy();
     private String theDefaultQualifier = "";
+    private long theRemoveThresholdMillis = 3600 * 1000 * 24; // one full day
 }

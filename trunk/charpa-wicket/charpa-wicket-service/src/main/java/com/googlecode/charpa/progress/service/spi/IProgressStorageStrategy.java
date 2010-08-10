@@ -1,6 +1,7 @@
 package com.googlecode.charpa.progress.service.spi;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.googlecode.charpa.progress.service.LogMessage;
@@ -22,4 +23,5 @@ public interface IProgressStorageStrategy {
 	void addInfoMessage(ProgressId id, String message);
 	void addErrorMessage(ProgressId id, String message);
 	List<LogMessage> listLatestLogMessages(ProgressId id, int limit);
+	void deleteStaleProgresses(Date olderThan);
 }

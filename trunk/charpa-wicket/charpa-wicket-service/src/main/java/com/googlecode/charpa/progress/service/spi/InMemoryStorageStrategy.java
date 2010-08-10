@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.googlecode.charpa.progress.service.LogMessage;
 import com.googlecode.charpa.progress.service.ProgressId;
@@ -92,6 +94,25 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
             list.add(0, findProgress(id).getLogMessages().get(size - i - 1));
         }
         return list;
+	}
+
+	public void deleteStaleProgresses(Date olderThan) {
+		Iterator<Entry<ProgressId, ProgressInfo>> it = progresses.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<ProgressId, ProgressInfo> entry = it.next();
+			ProgressInfo info = entry.getValue();
+			ProgressState state = info.getState();
+			if (state == ProgressState.CANCELLED || state == ProgressState.FAILED
+					|| state == ProgressState.FINISHED) {
+				if (info.getEndedTime().before(olderThan)) {
+					it.remove();
+				}
+			} else if (state == ProgressState.PENDING) {
+				if (info.getCreatedTime().before(olderThan)) {
+					it.remove();
+				}
+			}
+		}
 	}
 
 }
