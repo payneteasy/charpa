@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -26,18 +27,43 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         finishProgress(id);
     }
     
-    public void setStorageStrategy(IProgressStorageStrategy aStorageStrategy) {
-    	theStorageStrategy = aStorageStrategy;
+    public void setStorageStrategies(Map<String, IProgressStorageStrategy> aStorageStrategies) {
+    	theStorageStrategies = aStorageStrategies;
+    }
+    
+    public void setDefaultStorageStrategy(IProgressStorageStrategy aStrategy) {
+    	theDefaultStorageStrategy = aStrategy;
+    }
+    
+    public void setDefaultQualifier(String aQualifier) {
+    	theDefaultQualifier = aQualifier;
+    }
+    
+    protected IProgressStorageStrategy selectStorageStrategy(ProgressId aProgressId) {
+    	for (Entry<String, IProgressStorageStrategy> entry : theStorageStrategies.entrySet()) {
+    		if (aProgressId.toString().startsWith(entry.getKey())) {
+    			return entry.getValue();
+    		}
+    	}
+    	return theDefaultStorageStrategy;
     }
 
     public ProgressId createProgressId(String aName) {
         return createProgressId(aName, Collections.<String, String>emptyMap());
     }
     
+    public ProgressId createProgressId(String aName, String aQualifier) {
+    	return createProgressId(aName, Collections.<String, String>emptyMap(), aQualifier);
+    }
+    
     public ProgressId createProgressId(String aName, Map<String, String> aPageParameters) {
-        ProgressId id = new ProgressId(UUID.randomUUID().toString());
+    	return createProgressId(aName, aPageParameters, theDefaultQualifier);
+    }
+    
+    public ProgressId createProgressId(String aName, Map<String, String> aPageParameters, String aQualifier) {
+        ProgressId id = new ProgressId(aQualifier + UUID.randomUUID().toString());
         ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
-        theStorageStrategy.createProgress(id, info);
+        selectStorageStrategy(id).createProgress(id, info);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CREATED [ {} ]", id, aName);
         }
@@ -95,8 +121,15 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
 
     public List<IProgressInfo> listProgresses() {
         ArrayList<IProgressInfo> list = new ArrayList<IProgressInfo>();
-        for (ProgressInfo info : theStorageStrategy.listProgresses()) {
-            list.add(createReadOnlyProgressInfo(info));
+        for (IProgressStorageStrategy strategy : theStorageStrategies.values()) {
+            for (ProgressInfo info : strategy.listProgresses()) {
+                list.add(createReadOnlyProgressInfo(info));
+            }
+        }
+        if (!theStorageStrategies.containsValue(theDefaultStorageStrategy)) {
+            for (ProgressInfo info : theDefaultStorageStrategy.listProgresses()) {
+                list.add(createReadOnlyProgressInfo(info));
+            }
         }
 
         Collections.sort(list, new Comparator<IProgressInfo>() {
@@ -108,14 +141,14 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void cancelProgress(ProgressId aProgressId) {
-        theStorageStrategy.cancelProgress(aProgressId);
+    	selectStorageStrategy(aProgressId).cancelProgress(aProgressId);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CANCELLED", aProgressId);
         }
     }
     
 	public List<LogMessage> getLastLogMessages(ProgressId aId, int aCount) {
-		return theStorageStrategy.listLatestLogMessages(aId, aCount);
+		return selectStorageStrategy(aId).listLatestLogMessages(aId, aCount);
 	}
 
     ////////////////////////////////
@@ -123,7 +156,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     //
 
     public void startProgress(ProgressId aProgressId, String aProgressName, int aMaxValue) {
-        theStorageStrategy.startProgress(aProgressId, aProgressName, aMaxValue);
+    	selectStorageStrategy(aProgressId).startProgress(aProgressId, aProgressName, aMaxValue);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: STARTED [ {} ]", aProgressId, aProgressName);
         }
@@ -133,32 +166,32 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: text: {}", aProgressId, aProgressText);
         }
-        theStorageStrategy.changeProgressText(aProgressId, aProgressText);
+        selectStorageStrategy(aProgressId).changeProgressText(aProgressId, aProgressText);
     }
 
     public void incrementProgressValue(ProgressId aProgressId) {
-        theStorageStrategy.incrementProgressValue(aProgressId);
+    	selectStorageStrategy(aProgressId).incrementProgressValue(aProgressId);
     }
 
     public void finishProgress(ProgressId aProgressId) {
-        theStorageStrategy.finishProgress(aProgressId);
+    	selectStorageStrategy(aProgressId).finishProgress(aProgressId);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: FINISHED", aProgressId);
         }
     }
 
     public boolean isCancelled(ProgressId aProgressId) {
-        return theStorageStrategy.isCancelled(aProgressId);
+        return selectStorageStrategy(aProgressId).isCancelled(aProgressId);
     }
 
     public void setName(ProgressId aProgressId, String name) {
-        theStorageStrategy.changeProgressName(aProgressId, name);   
+    	selectStorageStrategy(aProgressId).changeProgressName(aProgressId, name);   
     }
     
     public void progressFailed(ProgressId aProgressId, Exception aException) {
         LOG.error(aProgressId+": "+aException.getMessage(), aException);
 
-        theStorageStrategy.progressFailed(aProgressId, aException);
+        selectStorageStrategy(aProgressId).progressFailed(aProgressId, aException);
         
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: FAILED", aProgressId);
@@ -166,11 +199,11 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void info(ProgressId aProgressId, String aInfoMessage) {
-    	theStorageStrategy.addInfoMessage(aProgressId, aInfoMessage);
+    	selectStorageStrategy(aProgressId).addInfoMessage(aProgressId, aInfoMessage);
     }
 
     public void error(ProgressId aProgressId, String aErrorMessage) {
-    	theStorageStrategy.addErrorMessage(aProgressId, aErrorMessage);
+    	selectStorageStrategy(aProgressId).addErrorMessage(aProgressId, aErrorMessage);
     }
 
     ////////////////////////////////
@@ -187,7 +220,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
             throw new IllegalStateException("progress id is null");
         }
 
-        ProgressInfo info = theStorageStrategy.findProgress(aProgressId);
+        ProgressInfo info = selectStorageStrategy(aProgressId).findProgress(aProgressId);
 
         if(info == null) {
             throw new IllegalStateException("Progress with id "+aProgressId+" was not found");
@@ -197,5 +230,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     private final Executor theExecutor = Executors.newSingleThreadExecutor();
-    private IProgressStorageStrategy theStorageStrategy = new InMemoryStorageStrategy();
+    private Map<String, IProgressStorageStrategy> theStorageStrategies = new HashMap<String, IProgressStorageStrategy>();
+    private IProgressStorageStrategy theDefaultStorageStrategy = new InMemoryStorageStrategy();
+    private String theDefaultQualifier = "";
 }

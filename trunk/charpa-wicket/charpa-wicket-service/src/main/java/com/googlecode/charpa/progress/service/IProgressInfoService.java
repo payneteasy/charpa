@@ -11,6 +11,10 @@ public interface IProgressInfoService {
     ProgressId createProgressId(String aName);
 
     ProgressId createProgressId(String aName, Map<String, String> aPageParameters);
+    
+    ProgressId createProgressId(String aName, String aQualifier);
+
+    ProgressId createProgressId(String aName, Map<String, String> aPageParameters, String aQualifier);
 
     void invoke(ProgressId aProgressId, Runnable aRunnable);
 
