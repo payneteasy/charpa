@@ -55,10 +55,21 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 
 	public boolean isCancelled(ProgressId id) {
 		ProgressInfo info = findProgress(id);
-        return info.getState() == ProgressState.CANCELLED;
+    if(info == null) {
+      throw new IllegalStateException("Progress with id " + id + " was not found");
+    }
+    return info.getState() == ProgressState.CANCELLED;
 	}
 
-	public Collection<ProgressInfo> listProgresses() {
+  public boolean isRunning(ProgressId progressId) {
+    ProgressInfo info = findProgress(progressId);
+    if(info == null) {
+      throw new IllegalStateException("Progress with id " + progressId + " was not found");
+    }
+    return info.getState() == ProgressState.RUNNING;
+  }
+
+  public Collection<ProgressInfo> listProgresses() {
 		return progresses.values();
 	}
 
