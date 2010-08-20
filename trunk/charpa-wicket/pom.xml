@@ -3,7 +3,7 @@
 
     <artifactId>charpa-wicket</artifactId>
     <groupId>com.googlecode.charpa</groupId>
-    <version>1.0-5</version>
+    <version>1.0-6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>charpa-wicket                         ${version}</name>
@@ -18,9 +18,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:https://charpa.googlecode.com/svn/tags/charpa-wicket-1.0-5</connection>
-        <developerConnection>scm:svn:https://charpa.googlecode.com/svn/tags/charpa-wicket-1.0-5</developerConnection>
-        <url>http://code.google.com/p/charpa/source/browse/tags/charpa-wicket-1.0-5</url>
+        <connection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</connection>
+        <developerConnection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</developerConnection>
+        <url>http://code.google.com/p/charpa/source/browse/</url>
     </scm>
 
     <developers>
@@ -72,7 +72,7 @@
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-5</version>
+                <version>1.0-6-SNAPSHOT</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->
