@@ -20,6 +20,14 @@ public interface IProgressManagerService {
      * @return true if cancelled
      */
     boolean isCancelled(ProgressId aProgressId);
+
+    /**
+     * Is progress running
+     * 
+     * @param progressId progress id
+     * @return true if running
+     */
+    boolean isRunning(ProgressId progressId);
     
     void setName(ProgressId aProgressId, String name);
 
