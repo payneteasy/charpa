@@ -73,22 +73,22 @@
             </tr>
         </table>
 
-        <a href="#" wicket:id='cancel-link'>Cancel</a>
+        <a href="#" wicket:id='cancel-link'><span wicket:id="cancel-label">Cancel</span></a>
         <table class="time">
             <wicket:enclosure child="created-time">
-                <tr><td width="150">Created time: </td><td class='time' wicket:id="created-time">2008.01.01 01:01:01</td></tr>
+                <tr><td width="150"><span wicket:id="created-time-label">Created time</span>: </td><td class='time' wicket:id="created-time">2008.01.01 01:01:01</td></tr>
             </wicket:enclosure>
             <wicket:enclosure child="started-time">
-                <tr><td>Started time: </td><td class='time' wicket:id="started-time">2008.01.01 01:01:01</td></tr>
+                <tr><td><span wicket:id="started-time-label">Started time</span>: </td><td class='time' wicket:id="started-time">2008.01.01 01:01:01</td></tr>
             </wicket:enclosure>
             <wicket:enclosure child="ended-time">
-                <tr><td>Ended time: </td><td class='time' wicket:id="ended-time">2008.01.01 01:01:01</td></tr>
+                <tr><td><span wicket:id="ended-time-label">Ended time</span>: </td><td class='time' wicket:id="ended-time">2008.01.01 01:01:01</td></tr>
             </wicket:enclosure>
             <wicket:enclosure child="time-elapsed">
-                <tr><td>Time elapsed: </td><td class='time' wicket:id="time-elapsed">01:01:01</td></tr>
+                <tr><td><span wicket:id="time-elapsed-label">Time elapsed</span>: </td><td class='time' wicket:id="time-elapsed">01:01:01</td></tr>
             </wicket:enclosure>
             <wicket:enclosure child="time-left">
-                <tr><td>Estimated time left: </td><td class='time' wicket:id="time-left">01:01:01</td></tr>
+                <tr><td><span wicket:id="estimated-time-left-label">Estimated time left</span>: </td><td class='time' wicket:id="time-left">01:01:01</td></tr>
             </wicket:enclosure>
         </table>
 

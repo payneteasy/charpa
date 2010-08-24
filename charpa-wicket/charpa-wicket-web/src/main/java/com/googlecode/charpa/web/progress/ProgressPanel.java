@@ -1,9 +1,9 @@
 package com.googlecode.charpa.web.progress;
 
-import com.googlecode.charpa.progress.service.*;
-import com.googlecode.charpa.web.component.ConfirmAjaxLink;
-import com.googlecode.charpa.web.util.FormatUtils;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
@@ -17,14 +17,27 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.util.time.Duration;
 
-import java.util.List;
+import com.googlecode.charpa.progress.service.IProgressInfo;
+import com.googlecode.charpa.progress.service.IProgressInfoService;
+import com.googlecode.charpa.progress.service.LogMessage;
+import com.googlecode.charpa.progress.service.ProgressId;
+import com.googlecode.charpa.progress.service.ProgressState;
+import com.googlecode.charpa.web.component.ConfirmAjaxLink;
+import com.googlecode.charpa.web.spi.DefaultResourceResolver;
+import com.googlecode.charpa.web.spi.IResourceResolver;
+import com.googlecode.charpa.web.util.FormatUtils;
 
 /**
  * Displays progress info
  */
 public class ProgressPanel extends Panel {
+	
+	public ProgressPanel(String aId, final PageParameters aParameters, IProgressInfoService aProgressInfoService) {
+		this(aId, aParameters, aProgressInfoService, new DefaultResourceResolver());
+	}
 
-    public ProgressPanel(String aId, final PageParameters aParameters, IProgressInfoService aProgressInfoService) {
+    public ProgressPanel(String aId, final PageParameters aParameters, IProgressInfoService aProgressInfoService,
+    		IResourceResolver aResourceResolver) {
         super(aId);
 
         theProgressInfoService = aProgressInfoService;
@@ -45,15 +58,15 @@ public class ProgressPanel extends Panel {
         };
 
         setDefaultModel(model);
-        panel.add(new Label("progress-name", new CompoundPropertyModel(model).bind("name")));
-        panel.add(new Label("progress-text", new CompoundPropertyModel(model).bind("progressText")));
-        panel.add(new Label("progress-max", new CompoundPropertyModel(model).bind("max")));
-        panel.add(new Label("progress-value", new CompoundPropertyModel(model).bind("currentValue")));
-        panel.add(new Label("progress-state", new CompoundPropertyModel(model).bind("state")));
+        panel.add(new Label("progress-name", new CompoundPropertyModel<String>(model).bind("name")));
+        panel.add(new Label("progress-text", new CompoundPropertyModel<String>(model).bind("progressText")));
+        panel.add(new Label("progress-max", new CompoundPropertyModel<String>(model).bind("max")));
+        panel.add(new Label("progress-value", new CompoundPropertyModel<String>(model).bind("currentValue")));
+        panel.add(new Label("progress-state", aResourceResolver.resolve("state." + model.getObject().getState().name(), model.getObject().getState().name())));
 
         WebMarkupContainer progressDone = new WebMarkupContainer("progress-done");
         panel.add(progressDone);
-        progressDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel() {
+        progressDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel<Object>() {
             public Object getObject() {
                 IProgressInfo info = model.getObject();
                 return Math.round((info.getCurrentValue() / (float)info.getMax()) * 400);
@@ -62,7 +75,7 @@ public class ProgressPanel extends Panel {
 
         WebMarkupContainer progressToBeDone = new WebMarkupContainer("progress-tobedone");
         panel.add(progressToBeDone);
-        progressToBeDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel() {
+        progressToBeDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel<Object>() {
             public Object getObject() {
                 IProgressInfo info = model.getObject();
                 return 400 - Math.round((info.getCurrentValue() / (float)info.getMax()) * 400);            
@@ -70,14 +83,15 @@ public class ProgressPanel extends Panel {
         }));
 
         panel.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(3)) {
-            @Override
+            @SuppressWarnings("unchecked")
+			@Override
             protected void onPostProcessTarget(AjaxRequestTarget aTarget) {
                 IProgressInfo info = (IProgressInfo) model.getObject();
                 PageParameters pageParameters = info.getPageParameters().isEmpty()
                                     ? aParameters : new PageParameters(info.getPageParameters());
                 if(pageParameters.get(ProgressParameters.NEXT_PAGE)!=null) {
                     try {
-                        Class pageClass = Class.forName(pageParameters.getString(ProgressParameters.NEXT_PAGE));
+                        Class<? extends Page> pageClass = (Class<? extends Page>) Class.forName(pageParameters.getString(ProgressParameters.NEXT_PAGE));
                         if(info.getState() == ProgressState.FINISHED) {
                             setResponsePage(pageClass, pageParameters);
                         }
@@ -88,8 +102,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new ConfirmAjaxLink("cancel-link", "Are you sure to cancel project run?") {
-
+        ConfirmAjaxLink cancelLink = new ConfirmAjaxLink("cancel-link", aResourceResolver.resolve(CANCEL_CONFIRMATION_KEY, "Are you sure to cancel project run?")) {
             public void onClick(AjaxRequestTarget target) {
                 theProgressInfoService.cancelProgress(id);
             }
@@ -98,11 +111,14 @@ public class ProgressPanel extends Panel {
                 IProgressInfo info = model.getObject();
                 return info.getState() == ProgressState.PENDING || info.getState() == ProgressState.RUNNING;
             }
-        });
+        };
+		panel.add(cancelLink);
+		cancelLink.add(new Label("cancel-label", aResourceResolver.resolve(CANCEL_KEY, "Cancel")));
 
         // time
-        panel.add(new Label("created-time", new AbstractReadOnlyModel() {
-            public Object getObject() {
+		panel.add(new Label("created-time-label", aResourceResolver.resolve(CREATED_TIME_KEY, "Created time")));
+        panel.add(new Label("created-time", new AbstractReadOnlyModel<String>() {
+            public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getCreatedTime());
             }
         }) {
@@ -111,8 +127,9 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("started-time", new AbstractReadOnlyModel() {
-            public Object getObject() {
+        panel.add(new Label("started-time-label", aResourceResolver.resolve(STARTED_TIME_KEY, "Started time")));
+        panel.add(new Label("started-time", new AbstractReadOnlyModel<String>() {
+            public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getStartedTime());
             }
         }) {
@@ -121,8 +138,9 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("ended-time", new AbstractReadOnlyModel() {
-            public Object getObject() {
+        panel.add(new Label("ended-time-label", aResourceResolver.resolve(ENDED_TIME_KEY, "Ended time")));
+        panel.add(new Label("ended-time", new AbstractReadOnlyModel<String>() {
+            public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getEndedTime());
             }
         }) {
@@ -131,8 +149,9 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("time-elapsed", new AbstractReadOnlyModel() {
-            public Object getObject() {
+        panel.add(new Label("time-elapsed-label", aResourceResolver.resolve(TIME_ELAPSED_KEY, "Time elapsed time")));
+        panel.add(new Label("time-elapsed", new AbstractReadOnlyModel<String>() {
+            public String getObject() {
                 return FormatUtils.formatPeriod(model.getObject().getElapsedPeriod());
             }
         }) {
@@ -141,8 +160,9 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("time-left", new AbstractReadOnlyModel() {
-            public Object getObject() {
+        panel.add(new Label("estimated-time-left-label", aResourceResolver.resolve(ESTIMATED_TIME_KEY, "Estimated time left")));
+        panel.add(new Label("time-left", new AbstractReadOnlyModel<String>() {
+            public String getObject() {
                 return FormatUtils.formatPeriod(model.getObject().getLeftPeriod());
             }
         }) {
@@ -163,6 +183,14 @@ public class ProgressPanel extends Panel {
             }
         });
     }
+    
+    public static final String CANCEL_KEY = "cancel";
+    public static final String CANCEL_CONFIRMATION_KEY = "cancel.confirmation";
+    public static final String CREATED_TIME_KEY = "created.time";
+    public static final String STARTED_TIME_KEY = "started.time";
+    public static final String ENDED_TIME_KEY = "ended.time";
+    public static final String TIME_ELAPSED_KEY = "time.elapsed";
+    public static final String ESTIMATED_TIME_KEY = "estimated.time.left";
 
     @SuppressWarnings({"UnusedDeclaration"})
 
