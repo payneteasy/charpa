@@ -3,14 +3,15 @@ package com.googlecode.charpa.web.component;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
+import org.apache.wicket.model.IModel;
 
 /**
  * Display confirm before action
  */
 public abstract class ConfirmAjaxLink extends IndicatingAjaxLink {
-    public ConfirmAjaxLink(String id, String aQuestion) {
+    public ConfirmAjaxLink(String id, IModel<String> aQuestionModel) {
         super(id);
-        theQuestion = aQuestion;
+        theQuestionModel = aQuestionModel;
     }
 
     @Override
@@ -18,10 +19,10 @@ public abstract class ConfirmAjaxLink extends IndicatingAjaxLink {
         return new AjaxCallDecorator() {
             @Override
             public CharSequence decorateScript(CharSequence script) {
-                return "if(!confirm('"+theQuestion+"')) return false;" + script;
+                return "if(!confirm('"+theQuestionModel.getObject()+"')) return false;" + script;
             }
         };
 
     }
-    private final String theQuestion;
+    private final IModel<String> theQuestionModel;
 }
