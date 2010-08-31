@@ -62,7 +62,7 @@ public class ProgressPanel extends Panel {
         panel.add(new Label("progress-text", new CompoundPropertyModel<String>(model).bind("progressText")));
         panel.add(new Label("progress-max", new CompoundPropertyModel<String>(model).bind("max")));
         panel.add(new Label("progress-value", new CompoundPropertyModel<String>(model).bind("currentValue")));
-        panel.add(new Label("progress-state", aResourceResolver.resolve("state." + model.getObject().getState().name(), model.getObject().getState().name())));
+        panel.add(new Label("progress-state", new ResolvingModel(aResourceResolver, "state." + model.getObject().getState().name(), model.getObject().getState().name())));
 
         WebMarkupContainer progressDone = new WebMarkupContainer("progress-done");
         panel.add(progressDone);
@@ -102,7 +102,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        ConfirmAjaxLink cancelLink = new ConfirmAjaxLink("cancel-link", aResourceResolver.resolve(CANCEL_CONFIRMATION_KEY, "Are you sure to cancel project run?")) {
+        ConfirmAjaxLink cancelLink = new ConfirmAjaxLink("cancel-link", new ResolvingModel(aResourceResolver, CANCEL_CONFIRMATION_KEY, "Are you sure to cancel project run?")) {
             public void onClick(AjaxRequestTarget target) {
                 theProgressInfoService.cancelProgress(id);
             }
@@ -113,10 +113,10 @@ public class ProgressPanel extends Panel {
             }
         };
 		panel.add(cancelLink);
-		cancelLink.add(new Label("cancel-label", aResourceResolver.resolve(CANCEL_KEY, "Cancel")));
+		cancelLink.add(new Label("cancel-label", new ResolvingModel(aResourceResolver, CANCEL_KEY, "Cancel")));
 
         // time
-		panel.add(new Label("created-time-label", aResourceResolver.resolve(CREATED_TIME_KEY, "Created time")));
+		panel.add(new Label("created-time-label", new ResolvingModel(aResourceResolver, CREATED_TIME_KEY, "Created time")));
         panel.add(new Label("created-time", new AbstractReadOnlyModel<String>() {
             public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getCreatedTime());
@@ -127,7 +127,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("started-time-label", aResourceResolver.resolve(STARTED_TIME_KEY, "Started time")));
+        panel.add(new Label("started-time-label", new ResolvingModel(aResourceResolver, STARTED_TIME_KEY, "Started time")));
         panel.add(new Label("started-time", new AbstractReadOnlyModel<String>() {
             public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getStartedTime());
@@ -138,7 +138,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("ended-time-label", aResourceResolver.resolve(ENDED_TIME_KEY, "Ended time")));
+        panel.add(new Label("ended-time-label", new ResolvingModel(aResourceResolver, ENDED_TIME_KEY, "Ended time")));
         panel.add(new Label("ended-time", new AbstractReadOnlyModel<String>() {
             public String getObject() {
                 return FormatUtils.formatDateTime(model.getObject().getEndedTime());
@@ -149,7 +149,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("time-elapsed-label", aResourceResolver.resolve(TIME_ELAPSED_KEY, "Time elapsed time")));
+        panel.add(new Label("time-elapsed-label", new ResolvingModel(aResourceResolver, TIME_ELAPSED_KEY, "Time elapsed time")));
         panel.add(new Label("time-elapsed", new AbstractReadOnlyModel<String>() {
             public String getObject() {
                 return FormatUtils.formatPeriod(model.getObject().getElapsedPeriod());
@@ -160,7 +160,7 @@ public class ProgressPanel extends Panel {
             }
         });
 
-        panel.add(new Label("estimated-time-left-label", aResourceResolver.resolve(ESTIMATED_TIME_KEY, "Estimated time left")));
+        panel.add(new Label("estimated-time-left-label", new ResolvingModel(aResourceResolver, ESTIMATED_TIME_KEY, "Estimated time left")));
         panel.add(new Label("time-left", new AbstractReadOnlyModel<String>() {
             public String getObject() {
                 return FormatUtils.formatPeriod(model.getObject().getLeftPeriod());
@@ -195,4 +195,25 @@ public class ProgressPanel extends Panel {
     @SuppressWarnings({"UnusedDeclaration"})
 
     private final IProgressInfoService theProgressInfoService;
+    
+    private static class ResolvingModel extends AbstractReadOnlyModel<String> {
+    	
+    	private IResourceResolver resourceResolver;
+    	private String key;
+    	private String defaultValue;
+
+		public ResolvingModel(IResourceResolver resourceResolver, String key,
+				String defaultValue) {
+			super();
+			this.resourceResolver = resourceResolver;
+			this.key = key;
+			this.defaultValue = defaultValue;
+		}
+
+		@Override
+		public String getObject() {
+			return resourceResolver.resolve(key, defaultValue);
+		}
+    	
+    }
 }
