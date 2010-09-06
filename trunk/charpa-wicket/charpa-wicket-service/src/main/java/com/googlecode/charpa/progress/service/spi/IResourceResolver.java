@@ -1,4 +1,4 @@
-package com.googlecode.charpa.web.spi;
+package com.googlecode.charpa.progress.service.spi;
 
 import java.io.Serializable;
 
