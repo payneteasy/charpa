@@ -22,9 +22,9 @@ import com.googlecode.charpa.progress.service.IProgressInfoService;
 import com.googlecode.charpa.progress.service.LogMessage;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.progress.service.ProgressState;
+import com.googlecode.charpa.progress.service.spi.DefaultResourceResolver;
+import com.googlecode.charpa.progress.service.spi.IResourceResolver;
 import com.googlecode.charpa.web.component.ConfirmAjaxLink;
-import com.googlecode.charpa.web.spi.DefaultResourceResolver;
-import com.googlecode.charpa.web.spi.IResourceResolver;
 import com.googlecode.charpa.web.util.FormatUtils;
 
 /**

@@ -1,7 +1,9 @@
 package com.googlecode.charpa.progress.service.impl;
 
 import com.googlecode.charpa.progress.service.*;
+import com.googlecode.charpa.progress.service.spi.DefaultResourceResolver;
 import com.googlecode.charpa.progress.service.spi.IProgressStorageStrategy;
+import com.googlecode.charpa.progress.service.spi.IResourceResolver;
 import com.googlecode.charpa.progress.service.spi.InMemoryStorageStrategy;
 
 import org.joda.time.Period;
@@ -35,6 +37,10 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     	theDefaultStorageStrategy = aStrategy;
     }
     
+    public void setResourceResolver(IResourceResolver aResourceResolver) {
+    	theResourceResolver = aResourceResolver;
+    }
+    
     public void setDefaultQualifier(String aQualifier) {
     	theDefaultQualifier = aQualifier;
     }
@@ -66,13 +72,18 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     
     public ProgressId createProgressId(String aName, Map<String, String> aPageParameters, String aQualifier) {
         ProgressId id = new ProgressId(aQualifier + UUID.randomUUID().toString());
-        ProgressInfo info = new ProgressInfo(id, aName, aPageParameters);
+        ProgressInfo info = new ProgressInfo(id, aName, getStartingMessage(),
+        		aPageParameters);
         selectStorageStrategy(id).createProgress(id, info);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CREATED [ {} ]", id, aName);
         }
         return id;
     }
+
+	private String getStartingMessage() {
+		return theResourceResolver.resolve("starting", "Starting...");
+	}
 
     ////////////////////////////////
     // INFO INTERFACE
@@ -250,6 +261,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     private final Executor theExecutor = Executors.newSingleThreadExecutor();
     private Map<String, IProgressStorageStrategy> theStorageStrategies = new HashMap<String, IProgressStorageStrategy>();
     private IProgressStorageStrategy theDefaultStorageStrategy = new InMemoryStorageStrategy();
+    private IResourceResolver theResourceResolver = new DefaultResourceResolver();
     private String theDefaultQualifier = "";
     private long theRemoveThresholdMillis = 3600 * 1000 * 24; // one full day
 }

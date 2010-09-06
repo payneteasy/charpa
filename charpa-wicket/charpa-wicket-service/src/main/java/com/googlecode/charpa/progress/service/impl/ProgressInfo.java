@@ -21,9 +21,9 @@ public class ProgressInfo implements Serializable {
      * @param aName  name
      * @param aMap   page parameters for redirecting
      */
-    public ProgressInfo(ProgressId aId, String aName, Map<String, String> aMap) {
+    public ProgressInfo(ProgressId aId, String aName, String aText, Map<String, String> aMap) {
         theCurrentValue = new AtomicInteger(0);
-        theProgressText = new AtomicReference<String>("Starting...");
+        theProgressText = new AtomicReference<String>(aText);
         theMax = new AtomicInteger(0);
         theName = new AtomicReference<String>(aName);
         theState = new AtomicReference<ProgressState>(ProgressState.PENDING);
