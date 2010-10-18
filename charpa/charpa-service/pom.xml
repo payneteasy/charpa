@@ -19,7 +19,7 @@
 
         <!-- charpa-wicket service -->
         <dependency>
-            <groupId>com.googlecode.charpa-wicket</groupId>
+            <groupId>com.googlecode.charpa.charpa-wicket</groupId>
             <artifactId>charpa-wicket-service</artifactId>
         </dependency>
 

@@ -50,16 +50,16 @@
 
             <!-- charpa-wicket service -->
             <dependency>
-                <groupId>com.googlecode.charpa-wicket</groupId>
+                <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-1-SNAPSHOT</version>
+                <version>1.0-10-SNAPSHOT</version>
             </dependency>
 
             <!-- charpa-wicket web -->
             <dependency>
-                <groupId>com.googlecode.charpa-wicket</groupId>
+                <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-web</artifactId>
-                <version>1.0-1-SNAPSHOT</version>
+                <version>1.0-10-SNAPSHOT</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->

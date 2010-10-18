@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.io.*;
 
 import org.springframework.util.Assert;
-import org.apache.wicket.util.io.IOUtils;
 
 /**
  * Implementation of ICommandService
