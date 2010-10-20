@@ -2,15 +2,15 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
-    <groupId>com.googlecode.charpa</groupId>
+    <groupId>com.googlecode.charpa.manager</groupId>
     <artifactId>charpa-service</artifactId>
     <version>1.0-1-SNAPSHOT</version>
     
     <name>.charpa-service                        ${version}</name>
 
     <parent>
-        <groupId>com.googlecode</groupId>
-        <artifactId>charpa</artifactId>
+        <groupId>com.googlecode.charpa</groupId>
+        <artifactId>manager</artifactId>
         <version>1.0-1-SNAPSHOT</version>
     </parent>
 
