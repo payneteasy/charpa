@@ -10,9 +10,9 @@
     <name>charpa                                 ${version}</name>
 
     <modules>
-        <module>charpa-service</module>
-        <module>charpa-web</module>
-        <module>charpa-integration-test</module>
+        <module>charpa-manager-service</module>
+        <module>charpa-manager-web</module>
+        <module>charpa-manager-integration-test</module>
     </modules>
 
     <scm>
