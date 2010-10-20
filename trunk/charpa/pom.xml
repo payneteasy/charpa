@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>charpa</artifactId>
-    <groupId>com.googlecode</groupId>
+    <artifactId>manager</artifactId>
+    <groupId>com.googlecode.charpa</groupId>
     <version>1.0-1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -43,7 +43,7 @@
 
             <!-- charpa -->
             <dependency>
-                <groupId>com.googlecode.charpa</groupId>
+                <groupId>com.googlecode.charpa.manager</groupId>
                 <artifactId>charpa-service</artifactId>
                 <version>1.0-1-SNAPSHOT</version>
             </dependency>
