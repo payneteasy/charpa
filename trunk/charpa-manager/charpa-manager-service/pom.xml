@@ -6,7 +6,7 @@
     <artifactId>charpa-service</artifactId>
     <version>1.0-1-SNAPSHOT</version>
     
-    <name>.charpa-service                        ${version}</name>
+    <name>.charpa-manager-service                        ${version}</name>
 
     <parent>
         <groupId>com.googlecode.charpa</groupId>
@@ -32,7 +32,7 @@
         <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <!-- test -->
@@ -73,15 +73,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core-tiger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
         </dependency>
 
         <!-- SSH -->

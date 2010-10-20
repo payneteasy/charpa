@@ -1,6 +1,7 @@
 package com.googlecode.charpa.web.page;
 
-import org.springframework.security.annotation.Secured;
+import org.springframework.security.access.annotation.Secured;
+
 
 /**
  * Home page
