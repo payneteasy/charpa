@@ -4,6 +4,7 @@ import com.googlecode.charpa.progress.service.IProgressInfoService;
 import com.googlecode.charpa.web.page.BasePage;
 import com.googlecode.charpa.web.progress.ProgressPanel;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * Progress page
@@ -14,5 +15,6 @@ public class ProgressPage extends BasePage {
         add(new ProgressPanel("progress-panel", aParameters, theProgressInfoService));
     }
 
-    IProgressInfoService theProgressInfoService = null;
+    @SpringBean
+    IProgressInfoService theProgressInfoService;
 }
