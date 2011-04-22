@@ -9,6 +9,8 @@ public interface IProgressManagerService {
     void setProgressText(ProgressId aProgressId, String aProgressText);
 
     void incrementProgressValue(ProgressId aProgressId);
+    
+    void incrementProgressValue(ProgressId aProgressId, int aDelta);
 
     void progressFailed(ProgressId aProgressId, Exception aException);
 

@@ -49,8 +49,8 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
         info.setState(ProgressState.FINISHED);
 	}
 
-	public void incrementProgressValue(ProgressId id) {
-		findProgress(id).incrementValue();
+	public void incrementProgressValue(ProgressId id, int delta) {
+		findProgress(id).incrementValue(delta);
 	}
 
 	public boolean isCancelled(ProgressId id) {
