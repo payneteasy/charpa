@@ -15,7 +15,7 @@ public interface IProgressStorageStrategy {
 	void cancelProgress(ProgressId id);
 	void startProgress(ProgressId id, String progressName, int maxValue);
 	void changeProgressText(ProgressId id, String text);
-	void incrementProgressValue(ProgressId id);
+	void incrementProgressValue(ProgressId id, int delta);
 	void finishProgress(ProgressId id);
 	boolean isCancelled(ProgressId id);
 	boolean isRunning(ProgressId progressId);

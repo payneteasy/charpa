@@ -185,7 +185,11 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public void incrementProgressValue(ProgressId aProgressId) {
-    	selectStorageStrategy(aProgressId).incrementProgressValue(aProgressId);
+    	incrementProgressValue(aProgressId, 1);
+    }
+    
+    public void incrementProgressValue(ProgressId aProgressId, int aDelta) {
+    	selectStorageStrategy(aProgressId).incrementProgressValue(aProgressId, aDelta);
     }
 
     public void finishProgress(ProgressId aProgressId) {

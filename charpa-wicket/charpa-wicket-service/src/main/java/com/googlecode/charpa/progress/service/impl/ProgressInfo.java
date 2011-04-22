@@ -65,8 +65,8 @@ public class ProgressInfo implements Serializable {
         theMax.set(aMax);
     }
 
-    public void incrementValue() {
-        theCurrentValue.incrementAndGet();
+    public void incrementValue(int delta) {
+        theCurrentValue.addAndGet(delta);
         if (theStartedTime.get() != null && getCurrentValue()>0) {
             long one = (System.currentTimeMillis() - theStartedTime.get().getTime()) / getCurrentValue();
             theLeftTime.set(one * (getMax() - getCurrentValue()));
