@@ -1,10 +1,10 @@
 package com.googlecode.charpa.progress.service.impl;
 
 import com.googlecode.charpa.progress.service.*;
-import com.googlecode.charpa.progress.service.spi.DefaultResourceResolver;
+import com.googlecode.charpa.progress.service.exception.ProgressNotFoundException;
 import com.googlecode.charpa.progress.service.spi.IProgressStorageStrategy;
 import com.googlecode.charpa.progress.service.spi.IResourceResolver;
-import com.googlecode.charpa.progress.service.spi.InMemoryStorageStrategy;
+import com.googlecode.charpa.progress.service.spi.ISecurityService;
 
 import org.joda.time.Period;
 import org.slf4j.Logger;
@@ -41,7 +41,11 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     	theResourceResolver = aResourceResolver;
     }
     
-    public void setDefaultQualifier(String aQualifier) {
+    public void setSecurityService(ISecurityService aSecurityService) {
+		theSecurityService = aSecurityService;
+	}
+
+	public void setDefaultQualifier(String aQualifier) {
     	theDefaultQualifier = aQualifier;
     }
     
@@ -73,7 +77,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     public ProgressId createProgressId(String aName, Map<String, String> aPageParameters, String aQualifier) {
         ProgressId id = new ProgressId(aQualifier + UUID.randomUUID().toString());
         ProgressInfo info = new ProgressInfo(id, aName, getStartingMessage(),
-        		aPageParameters);
+        		theSecurityService.getCurrentSecurityInfo(), aPageParameters);
         selectStorageStrategy(id).createProgress(id, info);
         if(LOG.isDebugEnabled()) {
             LOG.debug("{}: CREATED [ {} ]", id, aName);
@@ -256,7 +260,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
         ProgressInfo info = selectStorageStrategy(aProgressId).findProgress(aProgressId);
 
         if(info == null) {
-            throw new IllegalStateException("Progress with id "+aProgressId+" was not found");
+            throw new ProgressNotFoundException("Progress with id "+aProgressId+" was not found");
         }
 
         return info;
@@ -264,8 +268,17 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
 
     private final Executor theExecutor = Executors.newSingleThreadExecutor();
     private Map<String, IProgressStorageStrategy> theStorageStrategies = new HashMap<String, IProgressStorageStrategy>();
-    private IProgressStorageStrategy theDefaultStorageStrategy = new InMemoryStorageStrategy();
     private IResourceResolver theResourceResolver = new DefaultResourceResolver();
+    private IProgressStorageStrategy theDefaultStorageStrategy = new InMemoryStorageStrategy(new ISecurityServiceFactory() {
+		public ISecurityService getSecurityService() {
+			return theSecurityService;
+		}
+	});
+    private ISecurityService theSecurityService = new NullSecurityService();
     private String theDefaultQualifier = "";
     private long theRemoveThresholdMillis = 3600 * 1000 * 24; // one full day
+    
+    static interface ISecurityServiceFactory {
+    	ISecurityService getSecurityService();
+    }
 }

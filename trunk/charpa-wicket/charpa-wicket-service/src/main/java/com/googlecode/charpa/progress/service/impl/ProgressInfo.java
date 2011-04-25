@@ -21,7 +21,7 @@ public class ProgressInfo implements Serializable {
      * @param aName  name
      * @param aMap   page parameters for redirecting
      */
-    public ProgressInfo(ProgressId aId, String aName, String aText, Map<String, String> aMap) {
+    public ProgressInfo(ProgressId aId, String aName, String aText, String aSecurityInfo, Map<String, String> aMap) {
         theCurrentValue = new AtomicInteger(0);
         theProgressText = new AtomicReference<String>(aText);
         theMax = new AtomicInteger(0);
@@ -29,6 +29,7 @@ public class ProgressInfo implements Serializable {
         theState = new AtomicReference<ProgressState>(ProgressState.PENDING);
         theId = aId;
         theCreatedTime = new Date();
+        theSecurityInfo = aSecurityInfo;
         theMap = Collections.unmodifiableMap(aMap);
     }
 
@@ -103,7 +104,11 @@ public class ProgressInfo implements Serializable {
         return theMap;
     }
 
-    public long getLeftTime() {
+    public String getSecurityInfo() {
+		return theSecurityInfo;
+	}
+
+	public long getLeftTime() {
         return theLeftTime.get();
     }
     
@@ -176,6 +181,7 @@ public class ProgressInfo implements Serializable {
 
     private final ProgressId theId;
     private Date theCreatedTime;
+    private final String theSecurityInfo;
     private final Map<String, String> theMap;
     /** Started time */
     private final AtomicReference<Date> theStartedTime = new AtomicReference<Date>();
