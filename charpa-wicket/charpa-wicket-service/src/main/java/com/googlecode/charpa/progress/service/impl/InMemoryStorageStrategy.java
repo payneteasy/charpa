@@ -1,4 +1,4 @@
-package com.googlecode.charpa.progress.service.spi;
+package com.googlecode.charpa.progress.service.impl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,10 +13,36 @@ import java.util.Map.Entry;
 import com.googlecode.charpa.progress.service.LogMessage;
 import com.googlecode.charpa.progress.service.ProgressId;
 import com.googlecode.charpa.progress.service.ProgressState;
-import com.googlecode.charpa.progress.service.impl.ProgressInfo;
+import com.googlecode.charpa.progress.service.exception.ProgressNotFoundException;
+import com.googlecode.charpa.progress.service.impl.ProgressServiceImpl.ISecurityServiceFactory;
+import com.googlecode.charpa.progress.service.spi.IProgressStorageStrategy;
+import com.googlecode.charpa.progress.service.spi.ISecurityService;
 
+/**
+ * Stores progresses in memory.
+ * Security is checked for the following methods only:
+ * {@link #findProgress(ProgressId)}
+ * {@link #cancelProgress(ProgressId)}
+ * {@link #listLatestLogMessages(ProgressId, int)}
+ * {@link #listProgresses()}
+ */
 public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	
+	private ISecurityServiceFactory securityServiceFactory;
+	
+	public InMemoryStorageStrategy(final ISecurityService securityService) {
+		this(new ISecurityServiceFactory() {
+			public ISecurityService getSecurityService() {
+				return securityService;
+			}
+		});
+	}
+	
+	InMemoryStorageStrategy(ISecurityServiceFactory securityServiceFactory) {
+		super();
+		this.securityServiceFactory = securityServiceFactory;
+	}
+
 	private Map<ProgressId, ProgressInfo> progresses = Collections.synchronizedMap(new HashMap<ProgressId, ProgressInfo>());
 
 	public void addErrorMessage(ProgressId id, String message) {
@@ -30,7 +56,10 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	}
 
 	public void cancelProgress(ProgressId id) {
-		ProgressInfo info = findProgress(id);
+		ProgressInfo info = findProgressCheckingSecurity(id);
+		if (info == null) {
+			throw new ProgressNotFoundException(id.toString());
+		}
         info.setState(ProgressState.CANCELLED);
         info.setEndedTime(new Date());
 	}
@@ -40,7 +69,7 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	}
 
 	public ProgressInfo findProgress(ProgressId id) {
-		return progresses.get(id);
+		return findProgressCheckingSecurity(id);
 	}
 
 	public void finishProgress(ProgressId id) {
@@ -55,22 +84,24 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 
 	public boolean isCancelled(ProgressId id) {
 		ProgressInfo info = findProgress(id);
-    if(info == null) {
-      throw new IllegalStateException("Progress with id " + id + " was not found");
-    }
-    return info.getState() == ProgressState.CANCELLED;
+		if (info == null) {
+			throw new IllegalStateException("Progress with id " + id
+					+ " was not found");
+		}
+		return info.getState() == ProgressState.CANCELLED;
 	}
 
-  public boolean isRunning(ProgressId progressId) {
-    ProgressInfo info = findProgress(progressId);
-    if(info == null) {
-      throw new IllegalStateException("Progress with id " + progressId + " was not found");
-    }
-    return info.getState() == ProgressState.RUNNING;
-  }
+	public boolean isRunning(ProgressId progressId) {
+		ProgressInfo info = findProgress(progressId);
+		if (info == null) {
+			throw new IllegalStateException("Progress with id " + progressId
+					+ " was not found");
+		}
+		return info.getState() == ProgressState.RUNNING;
+	}
 
-  public Collection<ProgressInfo> listProgresses() {
-		return progresses.values();
+	public Collection<ProgressInfo> listProgresses() {
+		return filterNotSeenProgresses(progresses.values());
 	}
 
 	public void progressFailed(ProgressId id, Exception exception) {
@@ -99,6 +130,10 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	}
 
 	public List<LogMessage> listLatestLogMessages(ProgressId id, int limit) {
+		ProgressInfo progress = findProgressCheckingSecurity(id);
+		if (progress == null) {
+			throw new ProgressNotFoundException(id.toString());
+		}
         LinkedList<LogMessage> list = new LinkedList<LogMessage>();
         int size = findProgress(id).getLogMessages().size();
         for(int i=0; i < limit && i < size; i++) {
@@ -124,6 +159,30 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 				}
 			}
 		}
+	}
+	
+	protected ProgressInfo findProgressCheckingSecurity(ProgressId id) {
+		ProgressInfo progress = progresses.get(id);
+		if (progress != null) {
+			if (!securityServiceFactory.getSecurityService().userSeesProgress(id,
+					securityServiceFactory.getSecurityService().getCurrentSecurityInfo(),
+					progress.getSecurityInfo())) {
+				progress = null;
+			}
+		}
+		return progress;
+	}
+	
+	protected Collection<ProgressInfo> filterNotSeenProgresses(Collection<ProgressInfo> progresses) {
+		String currentSecurityInfo = securityServiceFactory.getSecurityService().getCurrentSecurityInfo();
+		List<ProgressInfo> result = new LinkedList<ProgressInfo>();
+		for (ProgressInfo progress : progresses) {
+			if (securityServiceFactory.getSecurityService().userSeesProgress(progress.getId(),
+					currentSecurityInfo, progress.getSecurityInfo())) {
+				result.add(progress);
+			}
+		}
+		return result;
 	}
 
 }
