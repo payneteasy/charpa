@@ -19,6 +19,7 @@ public interface IProgressStorageStrategy {
 	void finishProgress(ProgressId id);
 	boolean isCancelled(ProgressId id);
 	boolean isRunning(ProgressId progressId);
+	boolean isStarted(ProgressId progressId);
 	void changeProgressName(ProgressId id, String name);
 	void progressFailed(ProgressId id, Exception exception);
 	void addInfoMessage(ProgressId id, String message);

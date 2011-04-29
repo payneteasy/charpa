@@ -31,6 +31,14 @@ public interface IProgressManagerService {
      */
     boolean isRunning(ProgressId progressId);
     
+    /**
+     * Returns true if startProgress() was called for a progress.
+     * 
+     * @param progressId	ID of a progress
+     * @return true if progress was started at some point in time
+     */
+    boolean isStarted(ProgressId progressId);
+    
     void setName(ProgressId aProgressId, String name);
 
     /**
