@@ -99,6 +99,15 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 		}
 		return info.getState() == ProgressState.RUNNING;
 	}
+	
+	public boolean isStarted(ProgressId progressId) {
+		ProgressInfo info = findProgress(progressId);
+		if (info == null) {
+			throw new IllegalStateException("Progress with id " + progressId
+					+ " was not found");
+		}
+		return info.getState() != null && info.getState() != ProgressState.PENDING;
+	}
 
 	public Collection<ProgressInfo> listProgresses() {
 		return filterNotSeenProgresses(progresses.values());

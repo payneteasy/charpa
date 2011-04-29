@@ -210,6 +210,10 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     public boolean isRunning(ProgressId progressId) {
         return selectStorageStrategy(progressId).isRunning(progressId);
     }
+    
+	public boolean isStarted(ProgressId progressId) {
+		return selectStorageStrategy(progressId).isStarted(progressId);
+	}
 
     public void setName(ProgressId aProgressId, String name) {
     	selectStorageStrategy(aProgressId).changeProgressName(aProgressId, name);   
