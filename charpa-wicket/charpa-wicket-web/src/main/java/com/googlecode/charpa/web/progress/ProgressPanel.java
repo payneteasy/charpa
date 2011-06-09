@@ -37,7 +37,7 @@ public class ProgressPanel extends Panel {
 	}
 
     public ProgressPanel(String aId, final PageParameters aParameters, IProgressInfoService aProgressInfoService,
-    		IResourceResolver aResourceResolver) {
+    		final IResourceResolver aResourceResolver) {
         super(aId);
 
         theProgressInfoService = aProgressInfoService;
@@ -62,7 +62,12 @@ public class ProgressPanel extends Panel {
         panel.add(new Label("progress-text", new CompoundPropertyModel<String>(model).bind("progressText")));
         panel.add(new Label("progress-max", new CompoundPropertyModel<String>(model).bind("max")));
         panel.add(new Label("progress-value", new CompoundPropertyModel<String>(model).bind("currentValue")));
-        panel.add(new Label("progress-state", new ResolvingModel(aResourceResolver, "state." + model.getObject().getState().name(), model.getObject().getState().name())));
+        panel.add(new Label("progress-state", new AbstractReadOnlyModel<String>() {
+			@Override
+			public String getObject() {
+				return aResourceResolver.resolve("state." + model.getObject().getState().name(), model.getObject().getState().name());
+			}
+		}));
 
         WebMarkupContainer progressDone = new WebMarkupContainer("progress-done");
         panel.add(progressDone);
@@ -191,8 +196,6 @@ public class ProgressPanel extends Panel {
     public static final String ENDED_TIME_KEY = "ended.time";
     public static final String TIME_ELAPSED_KEY = "time.elapsed";
     public static final String ESTIMATED_TIME_KEY = "estimated.time.left";
-
-    @SuppressWarnings({"UnusedDeclaration"})
 
     private final IProgressInfoService theProgressInfoService;
     
