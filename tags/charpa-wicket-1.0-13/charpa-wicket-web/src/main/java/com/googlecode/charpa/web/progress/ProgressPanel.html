@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<head>
+    <title>Progress info</title>
+</head>
+<body>
+<wicket:head>
+    <style type="text/css">
+        .progress td.done {
+            background-color: blue;
+            height: 15px;
+            border: 1px solid blue;
+        }
+
+        .progress td.tobedone {
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+
+        .progress h2 {
+            font-size: 1em;
+        }
+
+        .progress h3 {
+            font-size: 0.9em;
+        }
+
+        td.value {
+            text-align: center;
+        }
+
+        table.progress-table {
+            width: 400px;
+        }
+
+        table.time {
+            margin-top: 1em;
+            color: gray;
+        }
+
+        table.time tr td {
+            padding-top: 5px;
+        }
+        
+        td.time {
+            text-align: right;
+        }
+
+        ul.log-messages li {
+            list-style: none;
+        }
+    </style>
+</wicket:head>
+<wicket:panel>
+
+    <div class='progress' wicket:id="panel">
+        <h2 wicket:id="progress-name">Progress name</h2>
+
+        <table border="0" class="progress-table">
+            <tr>
+                <td class='value' colspan="2">
+                    <span wicket:id="progress-text">Progress text</span>
+                </td>
+            </tr>
+            <tr>
+                <td class='done' wicket:id="progress-done"></td>
+                <td class='tobedone' wicket:id="progress-tobedone"></td>
+            </tr>
+            <tr>
+                <td class='value' colspan="2">
+                    <span wicket:id="progress-value">123</span> / <span wicket:id="progress-max"> 1000</span>
+                    ( <span wicket:id="progress-state">RUNNING</span> )
+                </td>
+            </tr>
+        </table>
+
+        <a href="#" wicket:id='cancel-link'><span wicket:id="cancel-label">Cancel</span></a>
+        <table class="time">
+            <wicket:enclosure child="created-time">
+                <tr><td width="150"><span wicket:id="created-time-label">Created time</span>: </td><td class='time' wicket:id="created-time">2008.01.01 01:01:01</td></tr>
+            </wicket:enclosure>
+            <wicket:enclosure child="started-time">
+                <tr><td><span wicket:id="started-time-label">Started time</span>: </td><td class='time' wicket:id="started-time">2008.01.01 01:01:01</td></tr>
+            </wicket:enclosure>
+            <wicket:enclosure child="ended-time">
+                <tr><td><span wicket:id="ended-time-label">Ended time</span>: </td><td class='time' wicket:id="ended-time">2008.01.01 01:01:01</td></tr>
+            </wicket:enclosure>
+            <wicket:enclosure child="time-elapsed">
+                <tr><td><span wicket:id="time-elapsed-label">Time elapsed</span>: </td><td class='time' wicket:id="time-elapsed">01:01:01</td></tr>
+            </wicket:enclosure>
+            <wicket:enclosure child="time-left">
+                <tr><td><span wicket:id="estimated-time-left-label">Estimated time left</span>: </td><td class='time' wicket:id="time-left">01:01:01</td></tr>
+            </wicket:enclosure>
+        </table>
+
+        <ul class="log-messages">
+            <li wicket:id="log-messages"><span wicket:id="log-message">[Log message]</span></li>
+        </ul>
+
+    </div>
+
+</wicket:panel>
+</body>
+</html>
+
