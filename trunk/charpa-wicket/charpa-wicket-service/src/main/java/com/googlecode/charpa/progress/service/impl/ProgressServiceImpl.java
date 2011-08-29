@@ -139,14 +139,18 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
     }
 
     public List<IProgressInfo> listProgresses() {
+    	return listProgresses(null);
+    }
+    
+	public List<IProgressInfo> listProgresses(String name) {
         ArrayList<IProgressInfo> list = new ArrayList<IProgressInfo>();
         for (IProgressStorageStrategy strategy : theStorageStrategies.values()) {
-            for (ProgressInfo info : strategy.listProgresses()) {
+            for (ProgressInfo info : strategy.listProgresses(name)) {
                 list.add(createReadOnlyProgressInfo(info));
             }
         }
         if (!theStorageStrategies.containsValue(theDefaultStorageStrategy)) {
-            for (ProgressInfo info : theDefaultStorageStrategy.listProgresses()) {
+            for (ProgressInfo info : theDefaultStorageStrategy.listProgresses(name)) {
                 list.add(createReadOnlyProgressInfo(info));
             }
         }
@@ -157,7 +161,7 @@ public class ProgressServiceImpl implements IProgressInfoService, IProgressManag
             }
         });
         return list;
-    }
+	}
 
     public void cancelProgress(ProgressId aProgressId) {
     	selectStorageStrategy(aProgressId).cancelProgress(aProgressId);

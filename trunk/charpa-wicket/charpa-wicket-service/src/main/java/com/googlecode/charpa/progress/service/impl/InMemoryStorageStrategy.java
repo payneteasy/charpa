@@ -24,7 +24,7 @@ import com.googlecode.charpa.progress.service.spi.ISecurityService;
  * {@link #findProgress(ProgressId)}
  * {@link #cancelProgress(ProgressId)}
  * {@link #listLatestLogMessages(ProgressId, int)}
- * {@link #listProgresses()}
+ * {@link #listProgresses())}
  */
 public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	
@@ -109,8 +109,24 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 		return info.getState() != null && info.getState() != ProgressState.PENDING;
 	}
 
-	public Collection<ProgressInfo> listProgresses() {
-		return filterNotSeenProgresses(progresses.values());
+	public Collection<ProgressInfo> listProgresses(String name) {
+		Collection<ProgressInfo> coll;
+		if (name == null) {
+			coll = progresses.values();
+		} else {
+			coll = findProgressesByName(name);
+		}
+		return filterNotSeenProgresses(coll);
+	}
+
+	private Collection<ProgressInfo> findProgressesByName(String name) {
+		Collection<ProgressInfo> result = new LinkedList<ProgressInfo>();
+		for (ProgressInfo progress : progresses.values()) {
+			if (name.equals(progress.getName())) {
+				result.add(progress);
+			}
+		}
+		return result;
 	}
 
 	public void progressFailed(ProgressId id, Exception exception) {

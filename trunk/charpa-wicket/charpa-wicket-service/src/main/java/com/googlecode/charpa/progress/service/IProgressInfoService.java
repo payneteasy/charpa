@@ -21,6 +21,8 @@ public interface IProgressInfoService {
     IProgressInfo getProgressInfo(ProgressId aProgressId);
 
     List<IProgressInfo> listProgresses();
+    
+    List<IProgressInfo> listProgresses(String name);
 
     /**
      * Cancels progress
