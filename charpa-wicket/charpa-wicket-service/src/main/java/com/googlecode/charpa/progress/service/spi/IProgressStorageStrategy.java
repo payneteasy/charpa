@@ -11,7 +11,7 @@ import com.googlecode.charpa.progress.service.impl.ProgressInfo;
 public interface IProgressStorageStrategy {
 	void createProgress(ProgressId id, ProgressInfo info);
 	ProgressInfo findProgress(ProgressId id);
-	Collection<ProgressInfo> listProgresses();
+	Collection<ProgressInfo> listProgresses(String name);
 	void cancelProgress(ProgressId id);
 	void startProgress(ProgressId id, String progressName, int maxValue);
 	void changeProgressText(ProgressId id, String text);
