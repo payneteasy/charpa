@@ -52,14 +52,14 @@
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-10-SNAPSHOT</version>
+                <version>${charpa.wicket.version}</version>
             </dependency>
 
             <!-- charpa-wicket web -->
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-web</artifactId>
-                <version>1.0-10-SNAPSHOT</version>
+                <version>${charpa.wicket.version}</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->
@@ -260,6 +260,8 @@
         <spring.version>3.0.4.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
         <slf4j.version>1.5.2</slf4j.version>
+
+        <charpa.wicket.version>1.0-14</charpa.wicket.version>
 
         <!--<jetty.version>6.1.4</jetty.version>-->
         <jetty.version>7.1.6.v20100715</jetty.version>

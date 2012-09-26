@@ -3,10 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
     <bean id="simplePersister" class="com.googlecode.charpa.service.dao.impl.simple.SimplePersister">
         <constructor-arg value="base/config.xml" />
@@ -42,5 +44,10 @@
         <property name="userDao" ref="userDao" />
         <property name="securityShellService" ref="securityShellService" />
     </bean>
+
+    <task:scheduler id="taskScheduler" pool-size="1"/>
+    <task:scheduled-tasks scheduler="taskScheduler">
+        <task:scheduled ref="progressService" method="removeStaleProgresses" fixed-delay="86400000"/>
+    </task:scheduled-tasks>
 
 </beans>
