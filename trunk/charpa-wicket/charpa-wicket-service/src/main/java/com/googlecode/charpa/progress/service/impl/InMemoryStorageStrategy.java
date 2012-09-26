@@ -1,13 +1,6 @@
 package com.googlecode.charpa.progress.service.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.googlecode.charpa.progress.service.LogMessage;
@@ -24,7 +17,7 @@ import com.googlecode.charpa.progress.service.spi.ISecurityService;
  * {@link #findProgress(ProgressId)}
  * {@link #cancelProgress(ProgressId)}
  * {@link #listLatestLogMessages(ProgressId, int)}
- * {@link #listProgresses())}
+ * {@link #listProgresses(String)}
  */
 public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 	
@@ -159,12 +152,12 @@ public class InMemoryStorageStrategy implements IProgressStorageStrategy {
 		if (progress == null) {
 			throw new ProgressNotFoundException(id.toString());
 		}
-        LinkedList<LogMessage> list = new LinkedList<LogMessage>();
-        int size = findProgress(id).getLogMessages().size();
-        for(int i=0; i < limit && i < size; i++) {
-            list.add(0, findProgress(id).getLogMessages().get(size - i - 1));
+        synchronized (progress) {
+            List<LogMessage> messages = progress.getLogMessages();
+            int messagesSize = messages.size();
+            int resultSize = Math.min(limit, messagesSize);
+            return new ArrayList<LogMessage>(messages.subList(messagesSize - resultSize, messagesSize));
         }
-        return list;
 	}
 
 	public void deleteStaleProgresses(Date olderThan) {
