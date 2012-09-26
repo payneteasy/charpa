@@ -138,7 +138,7 @@ public class ProgressInfo implements Serializable {
         theLogMessages.add(new LogMessage(LogMessage.Level.ERROR, aErrorMessage));
     }
 
-    public List<LogMessage> getLogMessages() {
+    List<LogMessage> getLogMessages() {
         return theLogMessages;
     }
     
@@ -188,5 +188,5 @@ public class ProgressInfo implements Serializable {
     /** Ended time */
     private final AtomicReference<Date> theEndedTime = new AtomicReference<Date>();
     private final AtomicLong theLeftTime = new AtomicLong(0);
-    private final List<LogMessage> theLogMessages = Collections.synchronizedList(new ArrayList<LogMessage>());
+    private final List<LogMessage> theLogMessages = Collections.synchronizedList(new LimitedCapacityDroppingList<LogMessage>(50));
 }

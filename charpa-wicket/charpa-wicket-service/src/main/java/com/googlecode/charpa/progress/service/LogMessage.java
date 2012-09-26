@@ -23,4 +23,9 @@ public class LogMessage implements Serializable {
     private final String theMessage ;
     /** Level */
     private final Level theLevel ;
+
+    @Override
+    public String toString() {
+        return theMessage;
+    }
 }

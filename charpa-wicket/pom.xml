@@ -107,17 +107,22 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.5.2</version>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.5.2</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.5.2</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -228,6 +233,7 @@
 
     <properties>
         <wicket.version>1.4.8</wicket.version>
+        <slf4j.version>1.6.5</slf4j.version>
         <jetty.version>6.1.4</jetty.version>
     </properties>
 
