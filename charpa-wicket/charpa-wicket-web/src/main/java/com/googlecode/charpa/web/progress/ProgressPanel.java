@@ -1,10 +1,12 @@
 package com.googlecode.charpa.web.progress;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -42,7 +44,7 @@ public class ProgressPanel extends Panel {
 
         theProgressInfoService = aProgressInfoService;
         
-        String idString = aParameters.getString("id");
+        String idString = aParameters.get("id").toString();
 
         if(idString==null || idString.trim().length()==0) throw new IllegalStateException("There was no id parameter given");
 
@@ -51,17 +53,17 @@ public class ProgressPanel extends Panel {
 
         final ProgressId id = new ProgressId(idString);
 
-        final AbstractReadOnlyModel<IProgressInfo> model = new AbstractReadOnlyModel<IProgressInfo>() {
+        final IModel<IProgressInfo> model = new AbstractReadOnlyModel<IProgressInfo>() {
             public IProgressInfo getObject() {
                 return theProgressInfoService.getProgressInfo(id);
             }
         };
 
         setDefaultModel(model);
-        panel.add(new Label("progress-name", new CompoundPropertyModel<String>(model).bind("name")));
-        panel.add(new Label("progress-text", new CompoundPropertyModel<String>(model).bind("progressText")));
-        panel.add(new Label("progress-max", new CompoundPropertyModel<String>(model).bind("max")));
-        panel.add(new Label("progress-value", new CompoundPropertyModel<String>(model).bind("currentValue")));
+        panel.add(new Label("progress-name", new CompoundPropertyModel<IProgressInfo>(model).bind("name")));
+        panel.add(new Label("progress-text", new CompoundPropertyModel<IProgressInfo>(model).bind("progressText")));
+        panel.add(new Label("progress-max", new CompoundPropertyModel<IProgressInfo>(model).bind("max")));
+        panel.add(new Label("progress-value", new CompoundPropertyModel<IProgressInfo>(model).bind("currentValue")));
         panel.add(new Label("progress-state", new AbstractReadOnlyModel<String>() {
 			@Override
 			public String getObject() {
@@ -71,7 +73,7 @@ public class ProgressPanel extends Panel {
 
         WebMarkupContainer progressDone = new WebMarkupContainer("progress-done");
         panel.add(progressDone);
-        progressDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel<Object>() {
+        progressDone.add(new AttributeModifier("width", new AbstractReadOnlyModel<Object>() {
             public Object getObject() {
                 IProgressInfo info = model.getObject();
                 return Math.round((info.getCurrentValue() / (float)info.getMax()) * 400);
@@ -80,7 +82,7 @@ public class ProgressPanel extends Panel {
 
         WebMarkupContainer progressToBeDone = new WebMarkupContainer("progress-tobedone");
         panel.add(progressToBeDone);
-        progressToBeDone.add(new AttributeModifier("width", true, new AbstractReadOnlyModel<Object>() {
+        progressToBeDone.add(new AttributeModifier("width", new AbstractReadOnlyModel<Object>() {
             public Object getObject() {
                 IProgressInfo info = model.getObject();
                 return 400 - Math.round((info.getCurrentValue() / (float)info.getMax()) * 400);            
@@ -91,12 +93,12 @@ public class ProgressPanel extends Panel {
             @SuppressWarnings("unchecked")
 			@Override
             protected void onPostProcessTarget(AjaxRequestTarget aTarget) {
-                IProgressInfo info = (IProgressInfo) model.getObject();
+                IProgressInfo info = model.getObject();
                 PageParameters pageParameters = info.getPageParameters().isEmpty()
-                                    ? aParameters : new PageParameters(info.getPageParameters());
+                                    ? aParameters : mapToParameters(info.getPageParameters());
                 if(pageParameters.get(ProgressParameters.NEXT_PAGE)!=null) {
                     try {
-                        Class<? extends Page> pageClass = (Class<? extends Page>) Class.forName(pageParameters.getString(ProgressParameters.NEXT_PAGE));
+                        Class<? extends Page> pageClass = (Class<? extends Page>) Class.forName(pageParameters.get(ProgressParameters.NEXT_PAGE).toString());
                         if(info.getState() == ProgressState.FINISHED) {
                             setResponsePage(pageClass, pageParameters);
                         }
@@ -187,6 +189,14 @@ public class ProgressPanel extends Panel {
                 aItem.add(new Label("log-message", aItem.getModelObject().getMessage()));
             }
         });
+    }
+
+    public static PageParameters mapToParameters(Map<String, String> map) {
+        PageParameters pp = new PageParameters();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            pp.set(entry.getKey(), entry.getValue());
+        }
+        return pp;
     }
     
     public static final String CANCEL_KEY = "cancel";
