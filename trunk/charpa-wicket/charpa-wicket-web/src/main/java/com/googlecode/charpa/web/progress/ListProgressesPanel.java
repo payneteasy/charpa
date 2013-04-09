@@ -1,10 +1,10 @@
 package com.googlecode.charpa.web.progress;
 
-import java.util.List;
-
+import com.googlecode.charpa.progress.service.IProgressInfo;
+import com.googlecode.charpa.progress.service.IProgressInfoService;
+import com.googlecode.charpa.web.util.FormatUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -15,11 +15,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.time.Duration;
 
-import com.googlecode.charpa.progress.service.IProgressInfo;
-import com.googlecode.charpa.progress.service.IProgressInfoService;
-import com.googlecode.charpa.web.util.FormatUtils;
+import java.util.List;
 
 /**
  * List progresses
@@ -63,12 +62,12 @@ public class ListProgressesPanel extends Panel {
                 aItem.add(new Label("progress-running-time", FormatUtils.formatPeriod(info.getElapsedPeriod())));
 
                 PageParameters params = new PageParameters();
-                params.put("id", info.getId().toString());
+                params.set("id", info.getId().toString());
                 BookmarkablePageLink<Void> link = new BookmarkablePageLink<Void>("progress-link", aProgressPanelClass, params);
                 aItem.add(link);
                 link.add(new Label("progress-name", info.getName()));
 
-                aItem.add(new AttributeModifier("class", true
+                aItem.add(new AttributeModifier("class"
                         , new Model<String>(
                         (aItem.getIndex()%2 == 0 ? "odd" : "even") +
                         (" state-"+info.getState().toString()).toLowerCase()))
