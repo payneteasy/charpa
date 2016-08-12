@@ -1,5 +1,6 @@
 package com.googlecode.charpa.web.progress;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,8 +100,10 @@ public class ProgressPanel extends Panel {
                 if(pageParameters.get(ProgressParameters.NEXT_PAGE)!=null) {
                     try {
                         Class<? extends Page> pageClass = (Class<? extends Page>) Class.forName(pageParameters.get(ProgressParameters.NEXT_PAGE).toString());
+                        PageParameters parametersToUse = new PageParameters(pageParameters);
+                        parametersToUse.remove(ProgressParameters.NEXT_PAGE);
                         if(info.getState() == ProgressState.FINISHED) {
-                            setResponsePage(pageClass, pageParameters);
+                            setResponsePage(pageClass, parametersToUse);
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(e.getMessage(), e);
