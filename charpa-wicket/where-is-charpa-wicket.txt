@@ -1,0 +1,1 @@
+charpa-wicket has been moved here: https://github.com/payneteasy/charpa-wicket
