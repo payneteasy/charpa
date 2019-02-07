@@ -8,9 +8,9 @@
 
     <name>charpa-wicket                         ${version}</name>
 
-    <description>A java persistence engine for stored procedures</description>
+    <description>Progress components for Charpa</description>
 
-    <url>http://charpa.googlecode.com</url>
+    <url>https://github.com/payneteasy/charpa</url>
 
     <modules>
         <module>charpa-wicket-service</module>
@@ -18,9 +18,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</connection>
-        <developerConnection>scm:svn:https://charpa.googlecode.com/svn/trunk/charpa-wicket</developerConnection>
-        <url>http://code.google.com/p/charpa/source/browse/</url>
+        <connection>scm:git:git@github.com:payneteasy/charpa.git</connection>
+        <developerConnection>scm:git:git@github.com:payneteasy/charpa.git</developerConnection>
+        <url>https://github.com/payneteasy/charpa</url>
     </scm>
 
     <developers>
