@@ -1,25 +1,5 @@
 package com.googlecode.charpa.web.progress;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Page;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.util.time.Duration;
-
 import com.googlecode.charpa.progress.service.IProgressInfo;
 import com.googlecode.charpa.progress.service.IProgressInfoService;
 import com.googlecode.charpa.progress.service.LogMessage;
@@ -29,6 +9,24 @@ import com.googlecode.charpa.progress.service.impl.DefaultResourceResolver;
 import com.googlecode.charpa.progress.service.spi.IResourceResolver;
 import com.googlecode.charpa.web.component.ConfirmAjaxLink;
 import com.googlecode.charpa.web.util.FormatUtils;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Page;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.time.Duration;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Displays progress info
@@ -97,7 +95,7 @@ public class ProgressPanel extends Panel {
                 IProgressInfo info = model.getObject();
                 PageParameters pageParameters = info.getPageParameters().isEmpty()
                                     ? aParameters : mapToParameters(info.getPageParameters());
-                if(pageParameters.get(ProgressParameters.NEXT_PAGE)!=null) {
+                if (!pageParameters.get(ProgressParameters.NEXT_PAGE).isEmpty()) {
                     try {
                         Class<? extends Page> pageClass = (Class<? extends Page>) Class.forName(pageParameters.get(ProgressParameters.NEXT_PAGE).toString());
                         PageParameters parametersToUse = new PageParameters(pageParameters);
