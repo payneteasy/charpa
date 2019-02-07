@@ -3,7 +3,7 @@
 
     <artifactId>charpa-wicket</artifactId>
     <groupId>com.googlecode.charpa</groupId>
-    <version>1.0-16</version>
+    <version>1.0-17-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>charpa-wicket                         ${version}</name>
@@ -72,7 +72,7 @@
             <dependency>
                 <groupId>com.googlecode.charpa.charpa-wicket</groupId>
                 <artifactId>charpa-wicket-service</artifactId>
-                <version>1.0-16</version>
+                <version>1.0-17-SNAPSHOT</version>
             </dependency>
 
             <!--  WICKET DEPENDENCIES -->
