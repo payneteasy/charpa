@@ -259,6 +259,6 @@
         <charpa.wicket.version>1.0-14</charpa.wicket.version>
 
         <!--<jetty.version>6.1.4</jetty.version>-->
-        <jetty.version>7.1.6.v20100715</jetty.version>
+        <jetty.version>9.4.41.v20210516</jetty.version>
     </properties>
 </project>
